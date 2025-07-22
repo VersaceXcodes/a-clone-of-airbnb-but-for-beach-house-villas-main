@@ -1,0 +1,16 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:5175",
+  "executionArgs": {
+    "projectName": "a-clone-of-airbnb-but-for-beach-house-villas-main",
+    "projectPath": "/Users/moel/Downloads/a-clone-of-airbnb-but-for-beach-house-villas-main",
+    "testIds": [],
+    "additionalInstruction": "",
+    "envs": {
+      "API_KEY": "sk-user-BggMlh-pu8AhRnFC81-5BZzRdncm2H5o6Vg2Bw6GQP2s130mxT2eYNGw1hXqwJ1Ydw22m6igTpv24FeLGBGseqjsVL2LSAZ4SULlOrhw5wY1oLLSulb5w5LzpelJ2g4Ncss"
+    }
+  },
+  "proxy": "http://927e2353-eb39-4ab9-b900-43e04bbab5b7:DWOlUj9SONRqEhdRujEKsjf0SrP4fSyT@tun.testsprite.com:8080"
+}

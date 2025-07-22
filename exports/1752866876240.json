@@ -1,0 +1,19 @@
+{
+  "timestamp": 1752866876240,
+  "operation": {
+    "id": "webapp:react:store",
+    "refs": {
+      "id": "redux",
+      "version": "latest"
+    }
+  },
+  "projectId": "a-clone-of-airbnb-but-for-beach-house-villas",
+  "files": [
+    {
+      "path": "../../apps/a-clone-of-airbnb-but-for-beach-house-villas/vitereact/src/store/main.tsx",
+      "type": "text",
+      "size": 14207,
+      "dependencies": false
+    }
+  ]
+}

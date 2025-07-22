@@ -1,0 +1,19 @@
+{
+  "timestamp": 1752867328104,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_LeaveReview",
+      "version": "latest"
+    }
+  },
+  "projectId": "a-clone-of-airbnb-but-for-beach-house-villas",
+  "files": [
+    {
+      "path": "../../apps/a-clone-of-airbnb-but-for-beach-house-villas/vitereact/src/components/views/UV_LeaveReview.tsx",
+      "type": "text",
+      "size": 12844,
+      "dependencies": false
+    }
+  ]
+}

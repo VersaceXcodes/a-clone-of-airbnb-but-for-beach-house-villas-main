@@ -1,0 +1,1893 @@
+openapi: 3.0.0
+info:
+  title: BeachStay Villas User API
+  version: 1.0.0
+  description: Comprehensive user-facing REST API for BeachStay Villas MVP.
+    Includes all data operations for guests, hosts, bookings, listings,
+    messaging, wishlists, notifications, and reviews.
+servers:
+  - url: http://localhost:3000
+    description: Development server
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    PageParam:
+      in: query
+      name: page
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+      required: false
+      description: Pagination page number
+    SortParam:
+      in: query
+      name: sort
+      schema:
+        type: string
+        enum:
+          - recommended
+          - price_low_high
+          - price_high_low
+          - rating
+          - newest
+          - popularity
+        default: recommended
+      required: false
+      description: Sort order
+    AmenitiesParam:
+      in: query
+      name: amenities
+      schema:
+        type: string
+      required: false
+      description: Comma-separated list of amenity IDs
+    VillaIdPath:
+      in: path
+      name: villa_id
+      schema:
+        type: integer
+      required: true
+      description: ID of the villa
+    WishlistIdPath:
+      in: path
+      name: wishlist_id
+      schema:
+        type: integer
+      required: true
+      description: ID of the wishlist
+    BookingIdPath:
+      in: path
+      name: booking_id
+      schema:
+        type: integer
+      required: true
+      description: ID of the booking
+    ThreadIdPath:
+      in: path
+      name: thread_id
+      schema:
+        type: integer
+      required: true
+      description: ID of the message thread
+    ReviewIdPath:
+      in: path
+      name: review_id
+      schema:
+        type: integer
+      required: true
+      description: ID of the review
+    PolicySlugPath:
+      in: path
+      name: policy_slug
+      schema:
+        type: string
+      required: true
+      description: Policy page slug
+    NumGuestsParam:
+      in: query
+      name: num_guests
+      schema:
+        type: integer
+        minimum: 1
+      required: false
+      description: Number of guests for search or booking
+    CheckinDateParam:
+      in: query
+      name: checkin_date
+      schema:
+        type: string
+        format: date
+      required: false
+      description: Check-in date
+    CheckoutDateParam:
+      in: query
+      name: checkout_date
+      schema:
+        type: string
+        format: date
+      required: false
+      description: Check-out date
+    LocationParam:
+      in: query
+      name: location
+      schema:
+        type: string
+      required: false
+      description: Location or area name
+    PriceMinParam:
+      in: query
+      name: price_min
+      schema:
+        type: number
+      required: false
+      description: Minimum nightly price
+    PriceMaxParam:
+      in: query
+      name: price_max
+      schema:
+        type: number
+      required: false
+      description: Maximum nightly price
+    BedroomsParam:
+      in: query
+      name: bedrooms
+      schema:
+        type: integer
+      required: false
+      description: Minimum bedrooms
+    BedsParam:
+      in: query
+      name: beds
+      schema:
+        type: integer
+      required: false
+      description: Minimum beds
+    BathroomsParam:
+      in: query
+      name: bathrooms
+      schema:
+        type: integer
+      required: false
+      description: Minimum bathrooms
+    IsBeachfrontParam:
+      in: query
+      name: is_beachfront
+      schema:
+        type: boolean
+      required: false
+      description: Beachfront only (true/false)
+    IsPetFriendlyParam:
+      in: query
+      name: is_pet_friendly
+      schema:
+        type: boolean
+      required: false
+      description: Pet friendly filter
+    IsInstantBookParam:
+      in: query
+      name: is_instant_book
+      schema:
+        type: boolean
+      required: false
+      description: Villas with instant booking
+  schemas:
+    AuthTokenResponse:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+        user_id:
+          type: integer
+        is_host:
+          type: boolean
+        display_name:
+          type: string
+        profile_photo_url:
+          type: string
+        superhost_status:
+          type: boolean
+    User:
+      type: object
+      required:
+        - user_id
+        - email
+        - display_name
+      properties:
+        user_id:
+          type: integer
+        email:
+          type: string
+        display_name:
+          type: string
+        profile_photo_url:
+          type: string
+          nullable: true
+        bio:
+          type: string
+          nullable: true
+        contact_email:
+          type: string
+          nullable: true
+        is_host:
+          type: boolean
+        is_superhost:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    UserProfileUpdate:
+      type: object
+      properties:
+        display_name:
+          type: string
+        profile_photo_url:
+          type: string
+        bio:
+          type: string
+        contact_email:
+          type: string
+    PasswordResetRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+    PasswordResetSubmit:
+      type: object
+      required:
+        - reset_code
+        - new_password
+      properties:
+        reset_code:
+          type: string
+        new_password:
+          type: string
+    SignupBody:
+      type: object
+      required:
+        - email
+        - password
+        - display_name
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        display_name:
+          type: string
+    LoginBody:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    Villa:
+      type: object
+      required:
+        - villa_id
+        - owner_user_id
+        - title
+        - address_city
+        - address_country
+        - latitude
+        - longitude
+        - cancellation_policy
+        - min_nights
+        - max_nights
+        - bedrooms
+        - beds
+        - bathrooms
+        - max_guests
+        - price_per_night
+        - cleaning_fee
+        - service_fee
+        - taxes
+        - is_active
+        - is_instant_book
+      properties:
+        villa_id:
+          type: integer
+        owner_user_id:
+          type: integer
+        title:
+          type: string
+        description_short:
+          type: string
+        description_long:
+          type: string
+        address_street:
+          type: string
+          nullable: true
+        address_city:
+          type: string
+        address_area:
+          type: string
+          nullable: true
+        address_postal_code:
+          type: string
+          nullable: true
+        address_country:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+        main_photo_url:
+          type: string
+        cancellation_policy:
+          type: string
+          enum:
+            - flexible
+            - moderate
+            - strict
+        house_rules:
+          type: string
+          nullable: true
+        min_nights:
+          type: integer
+        max_nights:
+          type: integer
+        bedrooms:
+          type: integer
+        beds:
+          type: integer
+        bathrooms:
+          type: integer
+        max_guests:
+          type: integer
+        price_per_night:
+          type: number
+        cleaning_fee:
+          type: number
+        service_fee:
+          type: number
+        taxes:
+          type: number
+        is_active:
+          type: boolean
+        is_beachfront:
+          type: boolean
+        is_pet_friendly:
+          type: boolean
+        is_instant_book:
+          type: boolean
+        published_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    VillaSummary:
+      type: object
+      required:
+        - villa_id
+        - title
+        - address_city
+        - main_photo_url
+        - price_per_night
+        - bedrooms
+        - beds
+        - bathrooms
+        - is_active
+        - is_instant_book
+        - avg_rating
+        - reviews_count
+      properties:
+        villa_id:
+          type: integer
+        title:
+          type: string
+        address_city:
+          type: string
+        main_photo_url:
+          type: string
+        price_per_night:
+          type: number
+        bedrooms:
+          type: integer
+        beds:
+          type: integer
+        bathrooms:
+          type: integer
+        is_active:
+          type: boolean
+        is_instant_book:
+          type: boolean
+        avg_rating:
+          type: number
+        reviews_count:
+          type: integer
+    VillaPhoto:
+      type: object
+      required:
+        - villa_photo_id
+        - villa_id
+        - photo_url
+        - ordering
+      properties:
+        villa_photo_id:
+          type: integer
+        villa_id:
+          type: integer
+        photo_url:
+          type: string
+        ordering:
+          type: integer
+        is_main:
+          type: boolean
+        uploaded_at:
+          type: string
+          format: date-time
+    VillaAmenity:
+      type: object
+      required:
+        - amenity_id
+        - label
+        - icon_url
+      properties:
+        amenity_id:
+          type: integer
+        label:
+          type: string
+        icon_url:
+          type: string
+    VillaRule:
+      type: object
+      required:
+        - villa_rule_id
+        - rule_type
+        - allowed
+      properties:
+        villa_rule_id:
+          type: integer
+        rule_type:
+          type: string
+        allowed:
+          type: boolean
+        notes:
+          type: string
+          nullable: true
+    VillaCalendarDay:
+      type: object
+      required:
+        - date
+        - is_available
+      properties:
+        date:
+          type: string
+          format: date
+        is_available:
+          type: boolean
+        reason:
+          type: string
+          nullable: true
+    VillaPricingOverride:
+      type: object
+      required:
+        - date
+        - nightly_price
+      properties:
+        date:
+          type: string
+          format: date
+        nightly_price:
+          type: number
+        min_nights:
+          type: integer
+          nullable: true
+        max_nights:
+          type: integer
+          nullable: true
+    Wishlist:
+      type: object
+      required:
+        - wishlist_id
+        - name
+        - villa_ids
+        - is_deleted
+        - created_at
+        - updated_at
+      properties:
+        wishlist_id:
+          type: integer
+        name:
+          type: string
+        villa_ids:
+          type: array
+          items:
+            type: integer
+        is_deleted:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    WishlistCreate:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+    WishlistUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        is_deleted:
+          type: boolean
+    WishlistVillaToggle:
+      type: object
+      required:
+        - villa_id
+      properties:
+        villa_id:
+          type: integer
+    WishlistAddVilla:
+      type: object
+      required:
+        - villa_id
+      properties:
+        villa_id:
+          type: integer
+    WishlistRemoveVilla:
+      type: object
+      required:
+        - villa_id
+      properties:
+        villa_id:
+          type: integer
+    Booking:
+      type: object
+      required:
+        - booking_id
+        - villa_id
+        - guest_user_id
+        - host_user_id
+        - checkin_date
+        - checkout_date
+        - num_guests
+        - status
+        - is_instant_book
+        - nightly_price
+        - cleaning_fee
+        - service_fee
+        - taxes
+        - total_price
+        - payment_status
+        - created_at
+        - updated_at
+      properties:
+        booking_id:
+          type: integer
+        villa_id:
+          type: integer
+        guest_user_id:
+          type: integer
+        host_user_id:
+          type: integer
+        checkin_date:
+          type: string
+          format: date
+        checkout_date:
+          type: string
+          format: date
+        num_guests:
+          type: integer
+        status:
+          type: string
+          enum:
+            - requested
+            - pending
+            - confirmed
+            - cancelled
+            - completed
+            - rejected
+            - modified
+        is_instant_book:
+          type: boolean
+        nightly_price:
+          type: number
+        cleaning_fee:
+          type: number
+        service_fee:
+          type: number
+        taxes:
+          type: number
+        total_price:
+          type: number
+        payment_status:
+          type: string
+          enum:
+            - pending
+            - paid
+            - refunded
+            - failed
+        cancellation_date:
+          type: string
+          format: date-time
+          nullable: true
+        cancellation_reason:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    BookingCreate:
+      type: object
+      required:
+        - villa_id
+        - checkin_date
+        - checkout_date
+        - num_guests
+        - guest_details
+      properties:
+        villa_id:
+          type: integer
+        checkin_date:
+          type: string
+          format: date
+        checkout_date:
+          type: string
+          format: date
+        num_guests:
+          type: integer
+        guest_details:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+            phone:
+              type: string
+              nullable: true
+            special_requests:
+              type: string
+              nullable: true
+    BookingModify:
+      type: object
+      required:
+        - checkin_date
+        - checkout_date
+        - num_guests
+      properties:
+        checkin_date:
+          type: string
+          format: date
+        checkout_date:
+          type: string
+          format: date
+        num_guests:
+          type: integer
+    BookingStatusUpdate:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - cancelled
+            - approved
+            - rejected
+    BookingPayment:
+      type: object
+      properties:
+        amount:
+          type: number
+        status:
+          type: string
+          enum:
+            - pending
+            - paid
+            - refunded
+            - failed
+    UserReview:
+      type: object
+      required:
+        - review_id
+        - booking_id
+        - guest_user_id
+        - villa_id
+        - host_user_id
+        - rating
+        - text
+        - is_edited
+        - created_at
+        - updated_at
+      properties:
+        review_id:
+          type: integer
+        booking_id:
+          type: integer
+        guest_user_id:
+          type: integer
+        villa_id:
+          type: integer
+        host_user_id:
+          type: integer
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        text:
+          type: string
+        is_edited:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    GuestReview:
+      type: object
+      required:
+        - guest_review_id
+        - booking_id
+        - host_user_id
+        - guest_user_id
+        - rating
+        - text
+        - is_edited
+        - created_at
+        - updated_at
+      properties:
+        guest_review_id:
+          type: integer
+        booking_id:
+          type: integer
+        host_user_id:
+          type: integer
+        guest_user_id:
+          type: integer
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        text:
+          type: string
+        is_edited:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ReviewCreate:
+      type: object
+      required:
+        - booking_id
+        - rating
+        - text
+      properties:
+        booking_id:
+          type: integer
+        rating:
+          type: integer
+        text:
+          type: string
+    ReviewUpdate:
+      type: object
+      required:
+        - text
+        - rating
+      properties:
+        text:
+          type: string
+        rating:
+          type: integer
+    MessageThread:
+      type: object
+      required:
+        - thread_id
+        - participant_user_id
+        - villa_id
+        - booking_id
+        - last_message_preview
+        - unread_count
+        - updated_at
+      properties:
+        thread_id:
+          type: integer
+        participant_user_id:
+          type: integer
+        villa_id:
+          type: integer
+          nullable: true
+        booking_id:
+          type: integer
+          nullable: true
+        last_message_preview:
+          type: string
+        unread_count:
+          type: integer
+        updated_at:
+          type: string
+          format: date-time
+    Message:
+      type: object
+      required:
+        - message_id
+        - thread_id
+        - sender_user_id
+        - recipient_user_id
+        - content
+        - is_read
+        - sent_at
+      properties:
+        message_id:
+          type: integer
+        thread_id:
+          type: integer
+        sender_user_id:
+          type: integer
+        recipient_user_id:
+          type: integer
+        content:
+          type: string
+        is_read:
+          type: boolean
+        sent_at:
+          type: string
+          format: date-time
+    MessageSend:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          type: string
+    Notification:
+      type: object
+      required:
+        - notification_id
+        - type
+        - message
+        - is_read
+        - reference_id
+        - created_at
+      properties:
+        notification_id:
+          type: integer
+        type:
+          type: string
+        message:
+          type: string
+        is_read:
+          type: boolean
+        reference_id:
+          type: integer
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+security:
+  - BearerAuth: []
+paths:
+  /auth/signup:
+    post:
+      summary: User signup (returns JWT on success)
+      operationId: signupUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignupBody"
+      responses:
+        "200":
+          description: Signup successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthTokenResponse"
+        "400":
+          description: Signup failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/login:
+    post:
+      summary: User login (returns JWT on success)
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginBody"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthTokenResponse"
+        "401":
+          description: Invalid login
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/password/request-reset:
+    post:
+      summary: Request password reset via email
+      operationId: requestPasswordReset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PasswordResetRequest"
+      responses:
+        "200":
+          description: Reset requested
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /auth/password/reset:
+    post:
+      summary: Submit new password (via reset code)
+      operationId: submitPasswordReset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PasswordResetSubmit"
+      responses:
+        "200":
+          description: Password reset successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /account/me:
+    get:
+      summary: Get current user profile and dashboard info
+      security:
+        - BearerAuth: []
+      operationId: getCurrentUserProfile
+      responses:
+        "200":
+          description: Current user profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    patch:
+      summary: Update current user profile
+      security:
+        - BearerAuth: []
+      operationId: updateCurrentUserProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserProfileUpdate"
+      responses:
+        "200":
+          description: Profile updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /villas:
+    get:
+      summary: Browse/search villas (homepage, featured, or discovery)
+      operationId: listVillas
+      parameters:
+        - $ref: "#/components/parameters/LocationParam"
+        - $ref: "#/components/parameters/CheckinDateParam"
+        - $ref: "#/components/parameters/CheckoutDateParam"
+        - $ref: "#/components/parameters/NumGuestsParam"
+        - $ref: "#/components/parameters/PriceMinParam"
+        - $ref: "#/components/parameters/PriceMaxParam"
+        - $ref: "#/components/parameters/BedroomsParam"
+        - $ref: "#/components/parameters/BedsParam"
+        - $ref: "#/components/parameters/BathroomsParam"
+        - $ref: "#/components/parameters/AmenitiesParam"
+        - $ref: "#/components/parameters/IsBeachfrontParam"
+        - $ref: "#/components/parameters/IsPetFriendlyParam"
+        - $ref: "#/components/parameters/IsInstantBookParam"
+        - $ref: "#/components/parameters/SortParam"
+        - $ref: "#/components/parameters/PageParam"
+      responses:
+        "200":
+          description: List of villas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/VillaSummary"
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+  /villas/featured:
+    get:
+      summary: Get featured villas (homepage carousel)
+      operationId: listFeaturedVillas
+      responses:
+        "200":
+          description: List of featured villas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VillaSummary"
+  /villas/popular-locations:
+    get:
+      summary: Get popular destinations (for homepage footer/cards)
+      operationId: listPopularLocations
+      responses:
+        "200":
+          description: List of locations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /villa/{villa_id}:
+    get:
+      summary: Get villa details by id
+      operationId: getVillaDetails
+      parameters:
+        - $ref: "#/components/parameters/VillaIdPath"
+      responses:
+        "200":
+          description: Villa detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Villa"
+    patch:
+      summary: Edit villa details
+      security:
+        - BearerAuth: []
+      operationId: updateVillaDetails
+      parameters:
+        - $ref: "#/components/parameters/VillaIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Villa"
+      responses:
+        "200":
+          description: Villa updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Villa"
+  /villa/{villa_id}/photos:
+    get:
+      summary: Get all villa photos (gallery)
+      operationId: listVillaPhotos
+      parameters:
+        - $ref: "#/components/parameters/VillaIdPath"
+      responses:
+        "200":
+          description: Villa photos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VillaPhoto"
+  /villa/{villa_id}/amenities:
+    get:
+      summary: Get amenities for the villa
+      operationId: listVillaAmenities
+      parameters:
+        - $ref: "#/components/parameters/VillaIdPath"
+      responses:
+        "200":
+          description: List of amenities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VillaAmenity"
+  /villa/{villa_id}/rules:
+    get:
+      summary: Get rules for the villa
+      operationId: listVillaRules
+      parameters:
+        - $ref: "#/components/parameters/VillaIdPath"
+      responses:
+        "200":
+          description: List of villa house rules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VillaRule"
+  /villa/{villa_id}/calendar:
+    get:
+      summary: Get availability calendar for villa
+      operationId: getVillaCalendar
+      parameters:
+        - $ref: "#/components/parameters/VillaIdPath"
+      responses:
+        "200":
+          description: Villa calendar
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VillaCalendarDay"
+    patch:
+      summary: Update villa calendar/availability (host only)
+      security:
+        - BearerAuth: []
+      operationId: updateVillaCalendar
+      parameters:
+        - $ref: "#/components/parameters/VillaIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/VillaCalendarDay"
+      responses:
+        "200":
+          description: Calendar updated
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VillaCalendarDay"
+  /villa/{villa_id}/pricing-overrides:
+    get:
+      summary: Get pricing overrides for villa
+      operationId: getVillaPricingOverrides
+      parameters:
+        - $ref: "#/components/parameters/VillaIdPath"
+      responses:
+        "200":
+          description: Per-date pricing
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VillaPricingOverride"
+    patch:
+      summary: Set per-date pricing overrides for villa
+      security:
+        - BearerAuth: []
+      operationId: updateVillaPricingOverrides
+      parameters:
+        - $ref: "#/components/parameters/VillaIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/VillaPricingOverride"
+      responses:
+        "200":
+          description: Pricing updated
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VillaPricingOverride"
+  /villas/amenities:
+    get:
+      summary: Get master amenity list
+      operationId: listAmenities
+      responses:
+        "200":
+          description: Master amenity list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VillaAmenity"
+  /host/villas:
+    get:
+      summary: Get all villas managed by current host
+      security:
+        - BearerAuth: []
+      operationId: listHostVillas
+      responses:
+        "200":
+          description: List of host's villas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VillaSummary"
+    post:
+      summary: Create a new villa (listing wizard)
+      security:
+        - BearerAuth: []
+      operationId: createHostVilla
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Villa"
+      responses:
+        "200":
+          description: Created villa
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Villa"
+  /villas/{villa_id}/booking/preview:
+    post:
+      summary: Preview booking price & availability for villa/dates
+      operationId: previewBooking
+      parameters:
+        - $ref: "#/components/parameters/VillaIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - checkin_date
+                - checkout_date
+                - num_guests
+              properties:
+                checkin_date:
+                  type: string
+                checkout_date:
+                  type: string
+                num_guests:
+                  type: integer
+      responses:
+        "200":
+          description: Preview booking price and availability
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  available:
+                    type: boolean
+                  price_summary:
+                    type: object
+                    properties:
+                      nightly_price:
+                        type: number
+                      cleaning_fee:
+                        type: number
+                      service_fee:
+                        type: number
+                      taxes:
+                        type: number
+                      total_price:
+                        type: number
+  /villas/{villa_id}/booking:
+    post:
+      summary: Create booking for villa
+      security:
+        - BearerAuth: []
+      operationId: createBooking
+      parameters:
+        - $ref: "#/components/parameters/VillaIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingCreate"
+      responses:
+        "200":
+          description: Booking created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /bookings/{booking_id}:
+    get:
+      summary: Get booking details
+      security:
+        - BearerAuth: []
+      operationId: getBooking
+      parameters:
+        - $ref: "#/components/parameters/BookingIdPath"
+      responses:
+        "200":
+          description: Booking info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+    patch:
+      summary: Modify a booking (date/guests)
+      security:
+        - BearerAuth: []
+      operationId: modifyBooking
+      parameters:
+        - $ref: "#/components/parameters/BookingIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingModify"
+      responses:
+        "200":
+          description: Booking modified
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+    delete:
+      summary: Cancel a booking
+      security:
+        - BearerAuth: []
+      operationId: cancelBooking
+      parameters:
+        - $ref: "#/components/parameters/BookingIdPath"
+      responses:
+        "200":
+          description: Booking cancelled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "400":
+          description: Cancellation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /account/my_trips:
+    get:
+      summary: List bookings for current user (as guest)
+      security:
+        - BearerAuth: []
+      operationId: listMyTrips
+      parameters:
+        - $ref: "#/components/parameters/PageParam"
+      responses:
+        "200":
+          description: List of bookings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  upcoming:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Booking"
+                  past:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Booking"
+                  cancelled:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Booking"
+  /host/reservations:
+    get:
+      summary: List all reservations for current host
+      security:
+        - BearerAuth: []
+      operationId: listHostReservations
+      parameters:
+        - $ref: "#/components/parameters/PageParam"
+      responses:
+        "200":
+          description: List of host's reservations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Booking"
+  /host/reservations/{booking_id}/status:
+    patch:
+      summary: Change booking request status (approve/reject/cancel)
+      security:
+        - BearerAuth: []
+      operationId: updateBookingStatus
+      parameters:
+        - $ref: "#/components/parameters/BookingIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingStatusUpdate"
+      responses:
+        "200":
+          description: Booking status updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+  /account/wishlists:
+    get:
+      summary: List all wishlists for current user
+      security:
+        - BearerAuth: []
+      operationId: listUserWishlists
+      responses:
+        "200":
+          description: List of wishlists
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Wishlist"
+    post:
+      summary: Create a new wishlist
+      security:
+        - BearerAuth: []
+      operationId: createWishlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WishlistCreate"
+      responses:
+        "200":
+          description: Created wishlist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wishlist"
+  /account/wishlists/{wishlist_id}:
+    patch:
+      summary: Edit wishlist (name or status)
+      security:
+        - BearerAuth: []
+      operationId: editWishlist
+      parameters:
+        - $ref: "#/components/parameters/WishlistIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WishlistUpdate"
+      responses:
+        "200":
+          description: Wishlist updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wishlist"
+    delete:
+      summary: Delete wishlist
+      security:
+        - BearerAuth: []
+      operationId: deleteWishlist
+      parameters:
+        - $ref: "#/components/parameters/WishlistIdPath"
+      responses:
+        "200":
+          description: Wishlist deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wishlist"
+  /account/wishlists/{wishlist_id}/villas/{villa_id}:
+    put:
+      summary: Add villa to wishlist
+      security:
+        - BearerAuth: []
+      operationId: addWishlistVilla
+      parameters:
+        - $ref: "#/components/parameters/WishlistIdPath"
+        - $ref: "#/components/parameters/VillaIdPath"
+      responses:
+        "200":
+          description: Villa added to wishlist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wishlist"
+    delete:
+      summary: Remove villa from wishlist
+      security:
+        - BearerAuth: []
+      operationId: removeWishlistVilla
+      parameters:
+        - $ref: "#/components/parameters/WishlistIdPath"
+        - $ref: "#/components/parameters/VillaIdPath"
+      responses:
+        "200":
+          description: Villa removed from wishlist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wishlist"
+  /inbox:
+    get:
+      summary: List all message threads for user
+      security:
+        - BearerAuth: []
+      operationId: listMessageThreads
+      responses:
+        "200":
+          description: List of message threads
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MessageThread"
+  /inbox/{thread_id}:
+    get:
+      summary: Get messages in thread
+      security:
+        - BearerAuth: []
+      operationId: getMessagesInThread
+      parameters:
+        - $ref: "#/components/parameters/ThreadIdPath"
+      responses:
+        "200":
+          description: List of messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Message"
+    post:
+      summary: Send message to thread
+      security:
+        - BearerAuth: []
+      operationId: sendThreadMessage
+      parameters:
+        - $ref: "#/components/parameters/ThreadIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MessageSend"
+      responses:
+        "200":
+          description: Message sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+  /villa/{villa_id}/contact-host:
+    post:
+      summary: Message host about villa (pre-booking)
+      security:
+        - BearerAuth: []
+      operationId: contactHost
+      parameters:
+        - $ref: "#/components/parameters/VillaIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MessageSend"
+      responses:
+        "200":
+          description: Host message thread created or updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageThread"
+  /villas/{villa_id}/reviews:
+    get:
+      summary: List public reviews for villa
+      operationId: listVillaReviews
+      parameters:
+        - $ref: "#/components/parameters/VillaIdPath"
+        - $ref: "#/components/parameters/PageParam"
+      responses:
+        "200":
+          description: List of user reviews
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reviews:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/UserReview"
+                  avg_rating:
+                    type: number
+                  total_reviews:
+                    type: integer
+  /account/my_reviews:
+    get:
+      summary: List all reviews written by current user
+      security:
+        - BearerAuth: []
+      operationId: listMyUserReviews
+      responses:
+        "200":
+          description: List of reviews I wrote
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserReview"
+  /host/villas/{villa_id}/guest-reviews:
+    get:
+      summary: List guest reviews written by host (for a villa)
+      security:
+        - BearerAuth: []
+      operationId: listHostGuestReviews
+      parameters:
+        - $ref: "#/components/parameters/VillaIdPath"
+      responses:
+        "200":
+          description: List of guest reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GuestReview"
+  /booking/{booking_id}/review:
+    post:
+      summary: Leave review after completed stay (guest or host)
+      security:
+        - BearerAuth: []
+      operationId: submitReview
+      parameters:
+        - $ref: "#/components/parameters/BookingIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewCreate"
+      responses:
+        "200":
+          description: Review submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserReview"
+        "400":
+          description: Review error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /review/{review_id}:
+    patch:
+      summary: Edit a review within allowed window
+      security:
+        - BearerAuth: []
+      operationId: editReview
+      parameters:
+        - $ref: "#/components/parameters/ReviewIdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewUpdate"
+      responses:
+        "200":
+          description: Review updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserReview"
+    delete:
+      summary: Remove a review (if allowed)
+      security:
+        - BearerAuth: []
+      operationId: deleteReview
+      parameters:
+        - $ref: "#/components/parameters/ReviewIdPath"
+      responses:
+        "200":
+          description: Review deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserReview"
+  /account/notifications:
+    get:
+      summary: List notifications for current user
+      security:
+        - BearerAuth: []
+      operationId: listNotifications
+      parameters:
+        - $ref: "#/components/parameters/PageParam"
+      responses:
+        "200":
+          description: Notifications
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Notification"
+                  unread_count:
+                    type: integer
+  /account/notifications/unread_count:
+    get:
+      summary: Get unread notifications count
+      security:
+        - BearerAuth: []
+      operationId: getUnreadNotificationCount
+      responses:
+        "200":
+          description: Unread count
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  unread_count:
+                    type: integer
+  /account/notifications/{notification_id}/read:
+    post:
+      summary: Mark notification as read
+      security:
+        - BearerAuth: []
+      operationId: markNotificationRead
+      parameters:
+        - in: path
+          name: notification_id
+          schema:
+            type: integer
+          required: true
+          description: Notification id
+      responses:
+        "200":
+          description: Notification marked read
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Notification"
+  /account/superhost:
+    get:
+      summary: Get current user's superhost status
+      security:
+        - BearerAuth: []
+      operationId: getSuperhostStatus
+      responses:
+        "200":
+          description: Superhost status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  is_superhost:
+                    type: boolean
+  /info/{policy_slug}:
+    get:
+      summary: Fetch legal or informational policy static content
+      operationId: getInfoPolicy
+      parameters:
+        - $ref: "#/components/parameters/PolicySlugPath"
+      responses:
+        "200":
+          description: Policy HTML or text
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: string
+  /search/suggestions:
+    get:
+      summary: Autocomplete suggestions for search bar
+      operationId: getSearchSuggestions
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: Partial text for location or villa keyword
+      responses:
+        "200":
+          description: Suggestions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /health:
+    get:
+      summary: API healthcheck
+      operationId: apiHealthcheck
+      responses:
+        "200":
+          description: Health status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string

@@ -1,0 +1,15 @@
+{
+  "timestamp": 1752865399342,
+  "operation": {
+    "id": "backend:specifications:openapi"
+  },
+  "projectId": "a-clone-of-airbnb-but-for-beach-house-villas",
+  "files": [
+    {
+      "path": "../../apps/a-clone-of-airbnb-but-for-beach-house-villas/backend/openapi.yaml",
+      "type": "text",
+      "size": 48280,
+      "dependencies": false
+    }
+  ]
+}

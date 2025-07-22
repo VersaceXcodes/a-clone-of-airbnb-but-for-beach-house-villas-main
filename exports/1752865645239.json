@@ -1,0 +1,15 @@
+{
+  "timestamp": 1752865645239,
+  "operation": {
+    "id": "db:schemas:zod"
+  },
+  "projectId": "a-clone-of-airbnb-but-for-beach-house-villas",
+  "files": [
+    {
+      "path": "../../apps/a-clone-of-airbnb-but-for-beach-house-villas/backend/schema.ts",
+      "type": "text",
+      "size": 37528,
+      "dependencies": false
+    }
+  ]
+}

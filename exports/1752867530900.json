@@ -1,0 +1,19 @@
+{
+  "timestamp": 1752867530900,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "GV_NotificationBar",
+      "version": "1752867073516"
+    }
+  },
+  "projectId": "a-clone-of-airbnb-but-for-beach-house-villas",
+  "files": [
+    {
+      "path": "../../apps/a-clone-of-airbnb-but-for-beach-house-villas/vitereact/src/components/views/GV_NotificationBar.tsx",
+      "type": "text",
+      "size": 12229,
+      "dependencies": false
+    }
+  ]
+}

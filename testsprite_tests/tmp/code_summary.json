@@ -1,0 +1,182 @@
+{
+  "tech_stack": [
+    "TypeScript",
+    "React 18",
+    "Vite",
+    "Node.js",
+    "Express",
+    "PostgreSQL",
+    "Socket.IO",
+    "Zustand",
+    "React Query",
+    "React Router DOM",
+    "Tailwind CSS",
+    "Radix UI",
+    "Zod",
+    "JWT",
+    "bcryptjs",
+    "Axios"
+  ],
+  "features": [
+    {
+      "name": "User Authentication",
+      "description": "Complete authentication system with login, signup, password reset for both guests and hosts",
+      "files": [
+        "vitereact/src/components/views/UV_GuestLogin.tsx",
+        "vitereact/src/components/views/UV_GuestSignup.tsx",
+        "vitereact/src/components/views/UV_HostSignup.tsx",
+        "vitereact/src/components/views/UV_PasswordReset.tsx",
+        "backend/server.ts"
+      ]
+    },
+    {
+      "name": "Villa Management",
+      "description": "Complete villa listing system with CRUD operations, photos, amenities, and pricing",
+      "files": [
+        "vitereact/src/components/views/UV_HostOnboardingWizard.tsx",
+        "vitereact/src/components/views/UV_HostVillaDetail.tsx",
+        "vitereact/src/components/views/UV_VillaDetails.tsx",
+        "backend/schema.ts"
+      ]
+    },
+    {
+      "name": "Search and Discovery",
+      "description": "Villa search functionality with filters, location-based search, and featured listings",
+      "files": [
+        "vitereact/src/components/views/UV_Homepage.tsx",
+        "vitereact/src/components/views/UV_SearchResults.tsx",
+        "backend/server.ts"
+      ]
+    },
+    {
+      "name": "Booking System",
+      "description": "End-to-end booking flow with date selection, guest management, payment simulation",
+      "files": [
+        "vitereact/src/components/views/UV_BookingStart.tsx",
+        "vitereact/src/components/views/UV_BookingConfirmation.tsx",
+        "vitereact/src/components/views/UV_BookingFailure.tsx",
+        "vitereact/src/components/views/UV_MyTrips.tsx",
+        "vitereact/src/components/views/UV_HostReservations.tsx",
+        "vitereact/src/components/views/UV_ReservationDetail.tsx"
+      ]
+    },
+    {
+      "name": "Messaging System",
+      "description": "Real-time messaging between guests and hosts with thread management",
+      "files": [
+        "vitereact/src/components/views/UV_MessagingInbox.tsx",
+        "vitereact/src/components/views/UV_MessagingThread.tsx",
+        "backend/server.ts"
+      ]
+    },
+    {
+      "name": "Review System",
+      "description": "Two-way review system for guests and hosts with rating and text reviews",
+      "files": [
+        "vitereact/src/components/views/UV_LeaveReview.tsx",
+        "vitereact/src/components/views/UV_ReviewEdit.tsx",
+        "backend/schema.ts"
+      ]
+    },
+    {
+      "name": "Wishlist Management",
+      "description": "User wishlist functionality to save and organize favorite villas",
+      "files": [
+        "vitereact/src/components/views/UV_Wishlists.tsx",
+        "backend/schema.ts"
+      ]
+    },
+    {
+      "name": "Dashboard Systems",
+      "description": "Separate dashboards for guests and hosts with personalized content and management tools",
+      "files": [
+        "vitereact/src/components/views/UV_GuestDashboard.tsx",
+        "vitereact/src/components/views/UV_HostDashboard.tsx",
+        "vitereact/src/components/views/UV_GuestProfileEdit.tsx",
+        "vitereact/src/components/views/UV_HostProfileEdit.tsx"
+      ]
+    },
+    {
+      "name": "State Management",
+      "description": "Global state management using Zustand with persistence and real-time updates",
+      "files": [
+        "vitereact/src/store/main.tsx",
+        "vitereact/src/stores/userSession.ts"
+      ]
+    },
+    {
+      "name": "Real-time Notifications",
+      "description": "Socket.IO based real-time notifications for bookings, messages, and updates",
+      "files": [
+        "vitereact/src/components/views/GV_NotificationBar.tsx",
+        "vitereact/src/store/main.tsx",
+        "backend/server.ts"
+      ]
+    },
+    {
+      "name": "Navigation and Layout",
+      "description": "Responsive navigation system with top navigation, footer, and routing",
+      "files": [
+        "vitereact/src/components/views/GV_TopNav.tsx",
+        "vitereact/src/components/views/GV_Footer.tsx",
+        "vitereact/src/App.tsx",
+        "vitereact/src/AppWrapper.tsx"
+      ]
+    },
+    {
+      "name": "Database Schema",
+      "description": "Comprehensive PostgreSQL database schema with all entities and relationships",
+      "files": [
+        "backend/db.sql",
+        "backend/schema.ts",
+        "backend/initdb.js"
+      ]
+    },
+    {
+      "name": "API Layer",
+      "description": "RESTful API with Express.js serving all frontend operations with JWT auth",
+      "files": [
+        "backend/server.ts",
+        "backend/openapi.yaml",
+        "backend/asyncapi.yaml"
+      ]
+    },
+    {
+      "name": "UI Components",
+      "description": "Comprehensive set of reusable UI components built with Radix UI and Tailwind CSS",
+      "files": [
+        "vitereact/src/components/ui/button.tsx",
+        "vitereact/src/components/ui/card.tsx",
+        "vitereact/src/components/ui/input.tsx",
+        "vitereact/src/components/ui/form.tsx",
+        "vitereact/src/components/ui/toast.tsx",
+        "vitereact/src/components/ui/tabs.tsx",
+        "vitereact/src/components/ui/calendar.tsx",
+        "vitereact/src/components/ui/select.tsx",
+        "vitereact/src/components/ui/textarea.tsx",
+        "vitereact/src/components/ui/checkbox.tsx",
+        "vitereact/src/components/ui/avatar.tsx",
+        "vitereact/src/components/ui/badge.tsx",
+        "vitereact/src/components/ui/separator.tsx",
+        "vitereact/src/components/ui/sheet.tsx",
+        "vitereact/src/components/ui/dropdown-menu.tsx"
+      ]
+    },
+    {
+      "name": "Error Handling",
+      "description": "Comprehensive error handling with 404 pages, error states, and fallback UI",
+      "files": [
+        "vitereact/src/components/views/UV_404NotFound.tsx",
+        "vitereact/src/components/views/UV_ErrorState.tsx",
+        "vitereact/src/App.tsx"
+      ]
+    },
+    {
+      "name": "Legal and Policy",
+      "description": "Legal pages for terms of service, privacy policy, and other compliance documents",
+      "files": [
+        "vitereact/src/components/views/UV_LegalPolicy.tsx"
+      ]
+    }
+  ]
+} 

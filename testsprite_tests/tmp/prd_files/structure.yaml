@@ -1,0 +1,296 @@
+_updated: 1752864994599
+_processing: false
+key: uxdatamap.structure
+data:
+  root:
+    globalState:
+      user_session:
+        schema: "{ user_id: number|null, is_authenticated: boolean, is_host: boolean,
+          token: string|null, display_name: string|null, profile_photo_url:
+          string|null, superhost_status: boolean, unread_message_count: number,
+          last_active_at: string|null }"
+        default: "{ user_id: null, is_authenticated: false, is_host: false, token: null,
+          display_name: null, profile_photo_url: null, superhost_status: false,
+          unread_message_count: 0, last_active_at: null }"
+        example: "{ user_id: 42, is_authenticated: true, is_host: true, token:
+          'abc123.jwt...', display_name: 'Sam Host', profile_photo_url:
+          '/photos/profile42.jpg', superhost_status: true, unread_message_count:
+          2, last_active_at: '2024-06-01T12:00:00Z' }"
+      search_state:
+        schema: "{ location: string, checkin_date: string|null, checkout_date:
+          string|null, num_guests: number, filters: { price_min: number|null,
+          price_max: number|null, bedrooms: number|null, beds: number|null,
+          bathrooms: number|null, amenities: number[], is_beachfront:
+          boolean|null, is_pet_friendly: boolean|null, is_instant_book:
+          boolean|null }, sort: string, page: number }"
+        default: "{ location: '', checkin_date: null, checkout_date: null, num_guests:
+          1, filters: { price_min: null, price_max: null, bedrooms: null, beds:
+          null, bathrooms: null, amenities: [], is_beachfront: null,
+          is_pet_friendly: null, is_instant_book: null }, sort: 'recommended',
+          page: 1 }"
+        example: "{ location: 'Santa Monica', checkin_date: '2024-08-05', checkout_date:
+          '2024-08-12', num_guests: 4, filters: { price_min: 150, price_max:
+          600, bedrooms: 2, beds: 3, bathrooms: 2, amenities: [1,3,5],
+          is_beachfront: true, is_pet_friendly: false, is_instant_book: true },
+          sort: 'price_low_high', page: 1 }"
+      notifications:
+        schema: "{ items: [ { id: number, type: string, message: string, is_read:
+          boolean, reference_id: number|null, created_at: string } ],
+          unread_count: number }"
+        default: "{ items: [], unread_count: 0 }"
+        example: "{ items: [ { id: 1, type: 'booking_confirmed', message: 'Your trip is
+          confirmed!', is_read: false, reference_id: 1234, created_at:
+          '2024-06-02T20:15:00Z' } ], unread_count: 1 }"
+      messaging_threads:
+        schema: "{ threads: [ { thread_id: number, participant_user_id: number,
+          villa_id: number|null, booking_id: number|null, last_message_preview:
+          string, unread_count: number, updated_at: string } ] }"
+        default: "{ threads: [] }"
+        example: "{ threads: [ { thread_id: 10, participant_user_id: 97, villa_id: 4,
+          booking_id: null, last_message_preview: 'What is your check-in time?',
+          unread_count: 1, updated_at: '2024-06-03T10:00:00Z' } ] }"
+      booking_cart:
+        schema: "{ villa_id: number|null, checkin_date: string|null, checkout_date:
+          string|null, num_guests: number, guest_details: { name: string, email:
+          string, phone: string|null, special_requests: string|null },
+          price_summary: { nightly_price: number, cleaning_fee: number,
+          service_fee: number, taxes: number, total_price: number }, status:
+          string }"
+        default: "{ villa_id: null, checkin_date: null, checkout_date: null, num_guests:
+          1, guest_details: { name: '', email: '', phone: null,
+          special_requests: null }, price_summary: { nightly_price: 0,
+          cleaning_fee: 0, service_fee: 0, taxes: 0, total_price: 0 }, status:
+          'idle' }"
+        example: "{ villa_id: 8, checkin_date: '2024-07-22', checkout_date:
+          '2024-07-25', num_guests: 2, guest_details: { name: 'Tina Traveler',
+          email: 'tina@email.com', phone: '+123123123', special_requests: 'Early
+          check-in' }, price_summary: { nightly_price: 240, cleaning_fee: 60,
+          service_fee: 23, taxes: 48, total_price: 851 }, status: 'pending' }"
+      wishlist_state:
+        schema: "{ wishlists: [ { wishlist_id: number, name: string, villa_ids:
+          number[], is_deleted: boolean, created_at: string, updated_at: string
+          } ] }"
+        default: "{ wishlists: [] }"
+        example: "{ wishlists: [ { wishlist_id: 3, name: 'Summer '24', villa_ids:
+          [4,9,12], is_deleted: false, created_at: '2024-04-20T08:30:00Z',
+          updated_at: '2024-05-02T21:22:00Z' } ] }"
+      host_dashboard_state:
+        schema: "{ villas: [ { villa_id: number, title: string, published_at:
+          string|null, is_active: boolean, main_photo_url: string,
+          pending_reservations: number, upcoming_reservations: number } ],
+          revenue_summary: { total: number, upcoming: number }, notifications: [
+          { id: number, message: string, is_read: boolean } ] }"
+        default: "{ villas: [], revenue_summary: { total: 0, upcoming: 0 },
+          notifications: [] }"
+        example: "{ villas: [ { villa_id: 8, title: 'Oceanfront Breeze', published_at:
+          '2024-03-09T11:00:00Z', is_active: true, main_photo_url:
+          '/villa8/main.jpg', pending_reservations: 2, upcoming_reservations: 1
+          } ], revenue_summary: { total: 4200, upcoming: 300 }, notifications: [
+          { id: 12, message: 'New booking request for Oceanfront Breeze',
+          is_read: false } ] }"
+      review_modal_state:
+        schema: "{ booking_id: number|null, villa_id: number|null, is_open: boolean,
+          type: string|null }"
+        default: "{ booking_id: null, villa_id: null, is_open: false, type: null }"
+        example: "{ booking_id: 17, villa_id: 8, is_open: true, type: 'guest_to_villa'
+          }"
+    routes:
+      - description: App entrypoint, landing page with search, featured villas, and
+          onboarding for guests and hosts.
+        path: /
+        view: UV_Homepage
+      - description: Search results for villas, with full filter and sort support
+          including map/list toggle.
+        path: /search
+        view: UV_SearchResults
+        urlParams:
+          - name: location
+            intent: The location or beach area to search for villas.
+            example: Cancun Beach
+            required: false
+          - name: checkin_date
+            intent: Check-in date in yyyy-mm-dd for searching availability.
+            example: 2024-08-10
+            required: false
+          - name: checkout_date
+            intent: Check-out date in yyyy-mm-dd for searching availability.
+            example: 2024-08-15
+            required: false
+          - name: num_guests
+            intent: Number of guests staying; used to filter villa results.
+            example: "3"
+            required: false
+          - name: price_min
+            intent: Minimum nightly price filter.
+            example: "150"
+            required: false
+          - name: price_max
+            intent: Maximum nightly price filter.
+            example: "600"
+            required: false
+          - name: bedrooms
+            intent: Minimum number of bedrooms required in villa.
+            example: "2"
+            required: false
+          - name: beds
+            intent: Minimum number of beds required in villa.
+            example: "3"
+            required: false
+          - name: bathrooms
+            intent: Minimum number of bathrooms required.
+            example: "2"
+            required: false
+          - name: amenities
+            intent: Comma-separated list of amenity IDs to filter; matches master amenity
+              list.
+            example: 1,2,3
+            required: false
+          - name: is_beachfront
+            intent: Return only beachfront villas.
+            example: "true"
+            required: false
+          - name: is_pet_friendly
+            intent: Return only pet-friendly villas.
+            example: "true"
+            required: false
+          - name: is_instant_book
+            intent: Return only villas with instant booking enabled.
+            example: "true"
+            required: false
+          - name: sort
+            intent: "Result sorting option: price_low_high, price_high_low, rating, newest,
+              or popularity."
+            example: price_low_high
+            required: false
+          - name: page
+            intent: Pagination parameter for results page number.
+            example: "2"
+            required: false
+      - description: Detailed villa information page; images, description, calendar,
+          booking widget.
+        path: /villa/:villa_id
+        view: UV_VillaDetails
+        slugs:
+          - name: villa_id
+            intent: Numeric unique identifier for the villa to display details for.
+      - description: Begin reservation and booking flow for a villa.
+        path: /villa/:villa_id/booking
+        view: UV_BookingStart
+        slugs:
+          - name: villa_id
+            intent: The unique villa id for which booking is being made.
+        urlParams:
+          - name: checkin_date
+            intent: Preselect check-in date carried through from search or villa view.
+            example: 2024-08-10
+            required: false
+          - name: checkout_date
+            intent: Preselect check-out date.
+            example: 2024-08-15
+            required: false
+          - name: num_guests
+            intent: Preselect number of guests.
+            example: "3"
+            required: false
+      - description: Displays booking confirmation after successful reservation.
+        path: /booking/confirmation/:booking_id
+        view: UV_BookingConfirmation
+        slugs:
+          - name: booking_id
+            intent: Booking unique identifier for displaying confirmation details.
+      - description: Booking failed or error state page displaying cause and next steps.
+        path: /booking/failure
+        view: UV_BookingFailure
+      - description: Guest signup page for new user registration.
+        path: /signup
+        view: UV_GuestSignup
+      - description: Guest login and authentication page.
+        path: /login
+        view: UV_GuestLogin
+      - description: Password reset page for forgotten passwords.
+        path: /password/reset
+        view: UV_PasswordReset
+      - description: Authenticated Guest dashboard—profile, trips, wishlists, inbox,
+          review history.
+        path: /account
+        view: UV_GuestDashboard
+      - description: Edit profile info and photo for current guest.
+        path: /account/edit
+        view: UV_GuestProfileEdit
+      - description: Guest My Trips tab, showing booking history (upcoming, past,
+          cancelled).
+        path: /account/my_trips
+        view: UV_MyTrips
+      - description: Authenticated Host dashboard landing, overview of properties,
+          reservations, earnings.
+        path: /host/dashboard
+        view: UV_HostDashboard
+      - description: Edit host profile; display name, contact email, bio, superhost
+          badge info.
+        path: /host/profile/edit
+        view: UV_HostProfileEdit
+      - description: Host onboarding and villa listing multi-step wizard (new or edit flow).
+        path: /host/villa/new
+        view: UV_HostOnboardingWizard
+      - description: Edit an existing villa listing as host; launches onboarding wizard
+          with prefilled data.
+        path: /host/villa/:villa_id/edit
+        view: UV_HostOnboardingWizard
+        slugs:
+          - name: villa_id
+            intent: Editing or relisting existing villa by id.
+      - description: Host view of single villa detail and analytics.
+        path: /host/villa/:villa_id
+        view: UV_HostVillaDetail
+        slugs:
+          - name: villa_id
+            intent: The villa being managed by the host.
+      - description: Host listing of all reservations across villas.
+        path: /host/reservations
+        view: UV_HostReservations
+      - description: Host detail of a single reservation.
+        path: /host/reservation/:booking_id
+        view: UV_ReservationDetail
+        slugs:
+          - name: booking_id
+            intent: Booking/reservation id for which details are being displayed.
+      - description: Guest or host inbox view—threaded message history.
+        path: /inbox
+        view: UV_MessagingInbox
+      - description: Guest or host view of specific message thread (booking or
+          pre-booking inquiry).
+        path: /inbox/:thread_id
+        view: UV_MessagingThread
+        slugs:
+          - name: thread_id
+            intent: Message thread id for which chat details are loaded.
+      - description: Guest leave review page/modal, for stays or host after guest checkout.
+        path: /review/new/:booking_id
+        view: UV_LeaveReview
+        slugs:
+          - name: booking_id
+            intent: Review is for the booking linked post-stay; used to show correct review
+              flow.
+      - description: Edit a submitted review within allowed post-stay window.
+        path: /review/edit/:review_id
+        view: UV_ReviewEdit
+        slugs:
+          - name: review_id
+            intent: The review record being edited (villa or guest).
+      - description: Guest's wishlists manager view with CRUD actions for wishlists/villas.
+        path: /account/wishlists
+        view: UV_Wishlists
+      - description: Legal or informational policy static pages (privacy, terms, about,
+          contact).
+        path: /info/:policy_slug
+        view: UV_LegalPolicy
+        slugs:
+          - name: policy_slug
+            intent: Identifies which policy page to load (e.g. privacy, terms, about,
+              contact).
+      - description: App-wide error boundary for technical errors and fallback.
+        path: /error
+        view: UV_ErrorState
+      - description: Catch-all page for 404 not found.
+        path: /404
+        view: UV_404NotFound

@@ -1,0 +1,19 @@
+{
+  "timestamp": 1752867168777,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_PasswordReset",
+      "version": "latest"
+    }
+  },
+  "projectId": "a-clone-of-airbnb-but-for-beach-house-villas",
+  "files": [
+    {
+      "path": "../../apps/a-clone-of-airbnb-but-for-beach-house-villas/vitereact/src/components/views/UV_PasswordReset.tsx",
+      "type": "text",
+      "size": 14999,
+      "dependencies": false
+    }
+  ]
+}

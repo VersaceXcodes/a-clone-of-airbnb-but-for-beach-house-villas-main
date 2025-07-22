@@ -1,0 +1,15 @@
+{
+  "timestamp": 1752866391540,
+  "operation": {
+    "id": "settings:config:package"
+  },
+  "projectId": "a-clone-of-airbnb-but-for-beach-house-villas",
+  "files": [
+    {
+      "path": "../../apps/a-clone-of-airbnb-but-for-beach-house-villas/backend/package.json",
+      "type": "text",
+      "size": 1519,
+      "dependencies": true
+    }
+  ]
+}

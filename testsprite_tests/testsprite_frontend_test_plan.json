@@ -1,0 +1,623 @@
+[
+  {
+    "id": "TC001",
+    "title": "User Signup Success",
+    "description": "Verify that a new user can successfully sign up as guest or host with valid inputs and receives a JWT token.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the signup page."
+      },
+      {
+        "type": "action",
+        "description": "Input valid registration details for a guest."
+      },
+      {
+        "type": "action",
+        "description": "Submit the signup form."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that the signup is successful and JWT token is issued."
+      },
+      {
+        "type": "action",
+        "description": "Repeat the above steps for a host signup."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify host account is created with correct role and token."
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "User Login Success and Failure",
+    "description": "Verify login functionality with correct and incorrect credentials for guests and hosts.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to login page."
+      },
+      {
+        "type": "action",
+        "description": "Enter correct username/email and password."
+      },
+      {
+        "type": "action",
+        "description": "Submit login form."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify login success and receipt of JWT token."
+      },
+      {
+        "type": "action",
+        "description": "Enter invalid username/email or wrong password."
+      },
+      {
+        "type": "action",
+        "description": "Submit login form."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify login failure with appropriate error message."
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Password Reset Flow",
+    "description": "Verify the password reset process including request, code verification, and setting new password.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the password reset request page."
+      },
+      {
+        "type": "action",
+        "description": "Submit email for password reset."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify reset code is generated and emailed."
+      },
+      {
+        "type": "action",
+        "description": "Submit received reset code and new password."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify password is reset successfully and user can login with new password."
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Villa Browsing and Search Filters",
+    "description": "Verify browsing villas without login and applying multiple search filters including location, price, amenities.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Access villas listing page as a guest visitor."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify villas are listed with correct multimedia and key information."
+      },
+      {
+        "type": "action",
+        "description": "Apply location filter."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify villas displayed match the location criteria."
+      },
+      {
+        "type": "action",
+        "description": "Apply price range filter."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify villas displayed meet the price constraints."
+      },
+      {
+        "type": "action",
+        "description": "Apply amenities filter."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify villas have the selected amenities."
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Host Villa Onboarding Wizard Complete Flow",
+    "description": "Verify that a host can complete the villa onboarding wizard including adding photos, amenities, rules, calendar, and pricing overrides.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as host and navigate to new villa onboarding wizard."
+      },
+      {
+        "type": "action",
+        "description": "Complete all steps: basic info, photos upload, amenities selection, rules definition."
+      },
+      {
+        "type": "action",
+        "description": "Set calendar availability and pricing overrides."
+      },
+      {
+        "type": "action",
+        "description": "Submit the completed villa details."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify villa is created with all entered data correctly saved and displayed."
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Villa CRUD Operations by Host",
+    "description": "Verify that hosts can create, read, update, and delete their villas with proper authentication and authorization.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as host."
+      },
+      {
+        "type": "action",
+        "description": "Create a new villa with valid inputs."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify villa is saved and appears in host's list."
+      },
+      {
+        "type": "action",
+        "description": "Edit an existing villa's name and photos."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify changes are saved and visible."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to update villa with invalid data."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify validation errors are shown and update is rejected."
+      },
+      {
+        "type": "action",
+        "description": "Delete a villa."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify villa is removed from host's listings."
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Booking Process Including Availability and Price Validation",
+    "description": "Verify that guests can make bookings validating availability, correct total price calculation including pricing overrides, and booking status changes.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as guest."
+      },
+      {
+        "type": "action",
+        "description": "Select a villa and open booking page."
+      },
+      {
+        "type": "action",
+        "description": "Select available dates."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify dates are available and price simulation matches calendar and overrides."
+      },
+      {
+        "type": "action",
+        "description": "Enter guest details and confirm booking."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify booking is created with status pending or confirmed."
+      },
+      {
+        "type": "action",
+        "description": "Attempt booking on unavailable dates."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify booking is rejected with appropriate error."
+      },
+      {
+        "type": "action",
+        "description": "Cancel the booking."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify booking status changes to cancelled and state is updated in real-time."
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Host Booking Approval, Rejection, and Cancellation",
+    "description": "Verify hosts can approve, reject, or cancel bookings with proper state updates and real-time notifications to guests.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as host."
+      },
+      {
+        "type": "action",
+        "description": "Access reservations dashboard."
+      },
+      {
+        "type": "action",
+        "description": "Approve a pending booking."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify booking status updates to approved and guest receives notification."
+      },
+      {
+        "type": "action",
+        "description": "Reject a pending booking."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify booking status updates to rejected and guest receives notification."
+      },
+      {
+        "type": "action",
+        "description": "Cancel an approved booking."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify booking status updates to cancelled and notifications are sent."
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Real-time Messaging System",
+    "description": "Verify real-time messaging between guests and hosts including message sending, thread creation, unread counts, and websocket notifications.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as guest and open messaging inbox."
+      },
+      {
+        "type": "action",
+        "description": "Send message in an existing thread to host."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify message appears immediately in guest and host inboxes and unread count updates."
+      },
+      {
+        "type": "action",
+        "description": "Login as host and confirm message receipt with websocket notification."
+      },
+      {
+        "type": "action",
+        "description": "Create a new message thread by sending message to a new contact."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify new thread is created and messages are delivered real-time."
+      },
+      {
+        "type": "action",
+        "description": "Mark messages as read."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify unread counts are updated for both parties."
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Review System Bidirectional CRUD",
+    "description": "Verify guests and hosts can create, edit, view, and delete reviews for stays with ratings and text.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as guest after completed stay."
+      },
+      {
+        "type": "action",
+        "description": "Submit a review with rating and text for the host."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify review is saved and displayed on host's dashboard."
+      },
+      {
+        "type": "action",
+        "description": "Edit the submitted review."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify changes are saved and updated."
+      },
+      {
+        "type": "action",
+        "description": "Delete the review."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify review is removed from system."
+      },
+      {
+        "type": "action",
+        "description": "Repeat above steps logging in as host leaving reviews about guests."
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Wishlist CRUD and Multi-list Support",
+    "description": "Verify users can create multiple wishlists, add and remove villas from each, and update or delete wishlists.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as guest."
+      },
+      {
+        "type": "action",
+        "description": "Create multiple wishlists."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify wishlists are created and listed correctly."
+      },
+      {
+        "type": "action",
+        "description": "Add villas to different wishlists."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify villas appear in correct wishlist collections."
+      },
+      {
+        "type": "action",
+        "description": "Remove villas from wishlists."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify villas are removed accordingly."
+      },
+      {
+        "type": "action",
+        "description": "Edit wishlist names and delete wishlists."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify updates and removals are reflected immediately."
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Dashboard Views for Guests and Hosts",
+    "description": "Verify that personalized dashboards display relevant data for reservations, profile editing, revenue summary, and notifications for both guests and hosts.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as guest."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify dashboard shows upcoming reservations, profile info, wishlist summary, and unread notifications."
+      },
+      {
+        "type": "action",
+        "description": "Edit profile details."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify profile changes are saved and reflected."
+      },
+      {
+        "type": "action",
+        "description": "Login as host."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify host dashboard shows active villas, reservations, revenue summaries, and notifications."
+      },
+      {
+        "type": "action",
+        "description": "Update host profile and view updated revenue chart."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify persistence and accuracy."
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "REST API Resource Ownership and Authorization",
+    "description": "Verify all API endpoints enforce resource ownership and JWT-based authorization for all applicable operations.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Make API request to access or modify a resource not owned by the user with a valid JWT."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify request is denied with appropriate 403 Forbidden response."
+      },
+      {
+        "type": "action",
+        "description": "Make API request without JWT or with invalid token."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify request is denied with 401 Unauthorized response."
+      },
+      {
+        "type": "action",
+        "description": "Make API request with JWT and resource owned by user."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify request is granted and operation succeeds."
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Input Validation and Schema Enforcement",
+    "description": "Verify all inputs to API endpoints and UI forms are validated according to Zod schemas, rejecting invalid or missing data properly.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Submit invalid data (missing required fields, wrong types) to signup, villa creation, booking, and review endpoints."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify validation errors with descriptive messages are returned and no data is persisted."
+      },
+      {
+        "type": "action",
+        "description": "Submit valid data for all forms and APIs."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify successful data acceptance."
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "UI Route Access Control and State Rendering",
+    "description": "Verify UI routes render correctly according to user authentication and role states, including redirects for unauthorized access.",
+    "category": "ui",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Access guest-only routes as authenticated guest."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify routes render expected views."
+      },
+      {
+        "type": "action",
+        "description": "Access host-only routes as guest or unauthenticated user."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify redirection to login or error page."
+      },
+      {
+        "type": "action",
+        "description": "Access public routes as unauthenticated visitor."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify correct content rendering."
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "Error Pages and Fallback UI",
+    "description": "Verify that 404 pages appear for invalid routes and fallback UI handles unexpected errors gracefully.",
+    "category": "error handling",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to a non-existent route."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify 404 Not Found page is displayed."
+      },
+      {
+        "type": "action",
+        "description": "Trigger UI errors such as failed data fetches."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify fallback UI shows error message and retry options."
+      }
+    ]
+  },
+  {
+    "id": "TC017",
+    "title": "Real-time Notification Updates and Read/Unread States",
+    "description": "Verify real-time notification updates for bookings, messages, and system events with correct unread counts and marking as read functionality.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as user with existing notifications."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify initial unread notification count is accurate."
+      },
+      {
+        "type": "action",
+        "description": "Trigger a new booking or message event from another user."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify notification bar updates in real-time and unread count increments."
+      },
+      {
+        "type": "action",
+        "description": "Mark notifications as read."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify unread count decrements and UI updates accordingly."
+      }
+    ]
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "timestamp": 1752867525718,
+  "operation": {
+    "id": "settings:config:package"
+  },
+  "projectId": "a-clone-of-airbnb-but-for-beach-house-villas",
+  "files": [
+    {
+      "path": "../../apps/a-clone-of-airbnb-but-for-beach-house-villas/vitereact/package.json",
+      "type": "text",
+      "size": 3089,
+      "dependencies": true
+    }
+  ]
+}
