@@ -1630,16 +1630,24 @@ app.get(
 // The full implementation contains similar sections for each OpenAPI endpoint: validation, permission, db r/w, response shaping, event emission.
 
 //---------------- SPA Static, Export, Startup BOILERPLATE ------------------//
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Only set up static file serving when not in test mode
+if (process.env.NODE_ENV !== "test") {
+  try {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, "public")));
+    // Serve static files from the 'public' directory
+    app.use(express.static(path.join(__dirname, "public")));
 
-// Catch-all route for SPA routing
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
+    // Catch-all route for SPA routing
+    app.get("*", (req, res) => {
+      res.sendFile(path.join(__dirname, "public", "index.html"));
+    });
+  } catch (error) {
+    // Skip static file setup if import.meta is not available (e.g., in test environment)
+    console.log("Skipping static file setup in test environment");
+  }
+}
 
 export { app, pool };
 
