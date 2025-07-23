@@ -1,0 +1,145 @@
+{
+  "tech_stack": [
+    "React",
+    "TypeScript",
+    "Vite",
+    "Express.js",
+    "Node.js",
+    "PostgreSQL",
+    "PGLite",
+    "TailwindCSS",
+    "Radix UI",
+    "React Router",
+    "Redux Toolkit",
+    "Zustand",
+    "React Query",
+    "Socket.io",
+    "Axios",
+    "Jest",
+    "Zod",
+    "bcryptjs",
+    "JWT"
+  ],
+  "features": [
+    {
+      "name": "User Authentication",
+      "description": "Guest and host login, signup, password reset with JWT tokens",
+      "files": [
+        "vitereact/src/components/views/UV_GuestLogin.tsx",
+        "vitereact/src/components/views/UV_GuestSignup.tsx",
+        "vitereact/src/components/views/UV_HostSignup.tsx",
+        "vitereact/src/components/views/UV_PasswordReset.tsx",
+        "vitereact/src/stores/userSession.ts"
+      ]
+    },
+    {
+      "name": "Villa Management",
+      "description": "Villa listings, details, search, host villa management",
+      "files": [
+        "vitereact/src/components/views/UV_VillaDetails.tsx",
+        "vitereact/src/components/views/UV_SearchResults.tsx",
+        "vitereact/src/components/views/UV_HostVillaDetail.tsx",
+        "vitereact/src/components/views/UV_HostDashboard.tsx"
+      ]
+    },
+    {
+      "name": "Booking System",
+      "description": "Villa booking flow, confirmation, payment processing",
+      "files": [
+        "vitereact/src/components/views/UV_BookingStart.tsx",
+        "vitereact/src/components/views/UV_BookingConfirmation.tsx",
+        "vitereact/src/components/views/UV_BookingFailure.tsx"
+      ]
+    },
+    {
+      "name": "User Dashboard",
+      "description": "Guest and host dashboards with trip management",
+      "files": [
+        "vitereact/src/components/views/UV_GuestDashboard.tsx",
+        "vitereact/src/components/views/UV_HostDashboard.tsx",
+        "vitereact/src/components/views/UV_MyTrips.tsx",
+        "vitereact/src/components/views/UV_HostReservations.tsx"
+      ]
+    },
+    {
+      "name": "Profile Management",
+      "description": "User profile editing for guests and hosts",
+      "files": [
+        "vitereact/src/components/views/UV_GuestProfileEdit.tsx",
+        "vitereact/src/components/views/UV_HostProfileEdit.tsx"
+      ]
+    },
+    {
+      "name": "Messaging System",
+      "description": "Real-time messaging between guests and hosts",
+      "files": [
+        "vitereact/src/components/views/UV_MessagingInbox.tsx",
+        "vitereact/src/components/views/UV_MessagingThread.tsx"
+      ]
+    },
+    {
+      "name": "Review System",
+      "description": "Leave and edit reviews for villa stays",
+      "files": [
+        "vitereact/src/components/views/UV_LeaveReview.tsx",
+        "vitereact/src/components/views/UV_ReviewEdit.tsx"
+      ]
+    },
+    {
+      "name": "Host Onboarding",
+      "description": "Multi-step wizard for new host registration",
+      "files": ["vitereact/src/components/views/UV_HostOnboardingWizard.tsx"]
+    },
+    {
+      "name": "Wishlist Management",
+      "description": "Save and manage favorite villas",
+      "files": ["vitereact/src/components/views/UV_Wishlists.tsx"]
+    },
+    {
+      "name": "Navigation & Layout",
+      "description": "Global navigation, footer, and notification system",
+      "files": [
+        "vitereact/src/components/views/GV_TopNav.tsx",
+        "vitereact/src/components/views/GV_Footer.tsx",
+        "vitereact/src/components/views/GV_NotificationBar.tsx"
+      ]
+    }
+  ],
+  "database_tables": [
+    "users",
+    "villas",
+    "bookings",
+    "reviews",
+    "messages",
+    "notifications",
+    "villa_photos",
+    "villa_amenities",
+    "villa_rules",
+    "villa_calendar",
+    "villa_pricing_overrides",
+    "amenities",
+    "wishlists",
+    "wishlist_items"
+  ],
+  "api_endpoints": [
+    "/auth/signup",
+    "/auth/login",
+    "/auth/password/request-reset",
+    "/auth/password/reset",
+    "/account/me",
+    "/account/notifications",
+    "/villas",
+    "/villas/featured",
+    "/villas/popular-locations",
+    "/villas/:villa_id",
+    "/villas/:villa_id/photos",
+    "/villas/:villa_id/amenities",
+    "/villas/:villa_id/rules",
+    "/villas/:villa_id/calendar",
+    "/villas/:villa_id/pricing-overrides",
+    "/villas/:villa_id/reviews",
+    "/villas/:villa_id/booking/preview",
+    "/villas/:villa_id/booking",
+    "/host/villas"
+  ]
+}
