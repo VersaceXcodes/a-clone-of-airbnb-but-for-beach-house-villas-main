@@ -8,7 +8,7 @@
 -- ========================================
 
 -- USERS
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
   user_id                 VARCHAR PRIMARY KEY,
   email                   VARCHAR NOT NULL UNIQUE,
   password_hash           VARCHAR NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE users (
 );
 
 -- VILLAS
-CREATE TABLE villas (
+CREATE TABLE IF NOT EXISTS villas (
   villa_id                VARCHAR PRIMARY KEY,
   owner_user_id           VARCHAR NOT NULL,
   title                   VARCHAR NOT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE villas (
 );
 
 -- VILLA_PHOTOS
-CREATE TABLE villa_photos (
+CREATE TABLE IF NOT EXISTS villa_photos (
   villa_photo_id          VARCHAR PRIMARY KEY,
   villa_id                VARCHAR NOT NULL,
   photo_url               VARCHAR NOT NULL,
@@ -72,7 +72,7 @@ CREATE TABLE villa_photos (
 );
 
 -- AMENITIES (Master amenity list)
-CREATE TABLE amenities (
+CREATE TABLE IF NOT EXISTS amenities (
   amenity_id              INTEGER PRIMARY KEY,
   label                   VARCHAR NOT NULL,
   icon_url                VARCHAR,
@@ -80,7 +80,7 @@ CREATE TABLE amenities (
 );
 
 -- VILLA_AMENITIES (many-to-many)
-CREATE TABLE villa_amenities (
+CREATE TABLE IF NOT EXISTS villa_amenities (
   villa_amenity_id        VARCHAR PRIMARY KEY,
   villa_id                VARCHAR NOT NULL,
   amenity_id              INTEGER NOT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE villa_amenities (
 );
 
 -- VILLA_RULES
-CREATE TABLE villa_rules (
+CREATE TABLE IF NOT EXISTS villa_rules (
   villa_rule_id           VARCHAR PRIMARY KEY,
   villa_id                VARCHAR NOT NULL,
   rule_type               VARCHAR NOT NULL,
@@ -99,7 +99,7 @@ CREATE TABLE villa_rules (
 );
 
 -- VILLA_CALENDAR
-CREATE TABLE villa_calendar (
+CREATE TABLE IF NOT EXISTS villa_calendar (
   villa_calendar_id       VARCHAR PRIMARY KEY,
   villa_id                VARCHAR NOT NULL,
   date                    TEXT NOT NULL,
@@ -110,7 +110,7 @@ CREATE TABLE villa_calendar (
 );
 
 -- VILLA_PRICING_OVERRIDES
-CREATE TABLE villa_pricing_overrides (
+CREATE TABLE IF NOT EXISTS villa_pricing_overrides (
   villa_pricing_override_id VARCHAR PRIMARY KEY,
   villa_id                VARCHAR NOT NULL,
   date                    TEXT NOT NULL,
@@ -122,7 +122,7 @@ CREATE TABLE villa_pricing_overrides (
 );
 
 -- WISHLISTS
-CREATE TABLE villa_wishlists (
+CREATE TABLE IF NOT EXISTS villa_wishlists (
   wishlist_id             VARCHAR PRIMARY KEY,
   user_id                 VARCHAR NOT NULL,
   name                    VARCHAR NOT NULL,
@@ -132,7 +132,7 @@ CREATE TABLE villa_wishlists (
   FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE wishlist_items (
+CREATE TABLE IF NOT EXISTS wishlist_items (
   wishlist_item_id        VARCHAR PRIMARY KEY,
   wishlist_id             VARCHAR NOT NULL,
   villa_id                VARCHAR NOT NULL,
@@ -142,7 +142,7 @@ CREATE TABLE wishlist_items (
 );
 
 -- BOOKINGS
-CREATE TABLE bookings (
+CREATE TABLE IF NOT EXISTS bookings (
   booking_id              VARCHAR PRIMARY KEY,
   villa_id                VARCHAR NOT NULL,
   guest_user_id           VARCHAR NOT NULL,
@@ -167,7 +167,7 @@ CREATE TABLE bookings (
   FOREIGN KEY (host_user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE booking_histories (
+CREATE TABLE IF NOT EXISTS booking_histories (
   booking_history_id      VARCHAR PRIMARY KEY,
   booking_id              VARCHAR NOT NULL,
   action                  VARCHAR NOT NULL,
@@ -179,7 +179,7 @@ CREATE TABLE booking_histories (
   FOREIGN KEY (action_by_user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE booking_guests (
+CREATE TABLE IF NOT EXISTS booking_guests (
   booking_guest_id        VARCHAR PRIMARY KEY,
   booking_id              VARCHAR NOT NULL,
   guest_name              VARCHAR NOT NULL,
@@ -189,7 +189,7 @@ CREATE TABLE booking_guests (
 );
 
 -- BOOKING PAYMENTS (simulated, only for record)
-CREATE TABLE booking_payments (
+CREATE TABLE IF NOT EXISTS booking_payments (
   booking_payment_id      VARCHAR PRIMARY KEY,
   booking_id              VARCHAR NOT NULL,
   user_id                 VARCHAR NOT NULL,
@@ -202,7 +202,7 @@ CREATE TABLE booking_payments (
 );
 
 -- MESSAGE THREADS (for grouping messages)
-CREATE TABLE message_threads (
+CREATE TABLE IF NOT EXISTS message_threads (
   thread_id               VARCHAR PRIMARY KEY,
   participant_user_id     VARCHAR NOT NULL,
   villa_id                VARCHAR,
@@ -216,7 +216,7 @@ CREATE TABLE message_threads (
 );
 
 -- MESSAGES
-CREATE TABLE messages (
+CREATE TABLE IF NOT EXISTS messages (
   message_id              VARCHAR PRIMARY KEY,
   thread_id               VARCHAR NOT NULL,
   sender_user_id          VARCHAR NOT NULL,
@@ -230,7 +230,7 @@ CREATE TABLE messages (
 );
 
 -- USER REVIEWS (guest→villa)
-CREATE TABLE user_reviews (
+CREATE TABLE IF NOT EXISTS user_reviews (
   review_id               VARCHAR PRIMARY KEY,
   booking_id              VARCHAR NOT NULL,
   guest_user_id           VARCHAR NOT NULL,
@@ -248,7 +248,7 @@ CREATE TABLE user_reviews (
 );
 
 -- GUEST REVIEWS (host→guest)
-CREATE TABLE guest_reviews (
+CREATE TABLE IF NOT EXISTS guest_reviews (
   guest_review_id         VARCHAR PRIMARY KEY,
   booking_id              VARCHAR NOT NULL,
   host_user_id            VARCHAR NOT NULL,
@@ -264,7 +264,7 @@ CREATE TABLE guest_reviews (
 );
 
 -- SUPERHOST HISTORY
-CREATE TABLE superhost_history (
+CREATE TABLE IF NOT EXISTS superhost_history (
   superhost_history_id    VARCHAR PRIMARY KEY,
   host_user_id            VARCHAR NOT NULL,
   is_superhost            BOOLEAN NOT NULL,
@@ -276,7 +276,7 @@ CREATE TABLE superhost_history (
 );
 
 -- NOTIFICATIONS
-CREATE TABLE notifications (
+CREATE TABLE IF NOT EXISTS notifications (
   notification_id         VARCHAR PRIMARY KEY,
   user_id                 VARCHAR NOT NULL,
   type                    VARCHAR NOT NULL,
@@ -288,7 +288,7 @@ CREATE TABLE notifications (
 );
 
 -- PASSWORD RESETS
-CREATE TABLE password_resets (
+CREATE TABLE IF NOT EXISTS password_resets (
   password_reset_id       VARCHAR PRIMARY KEY,
   user_id                 VARCHAR NOT NULL,
   reset_code              VARCHAR NOT NULL,
