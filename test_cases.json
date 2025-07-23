@@ -1,68 +1,47 @@
 {
   "testCases": [
     {
+      "id": "auth-guest-signup",
+      "name": "Guest User Registration Test",
+      "category": "authentication",
+      "priority": "critical",
+      "description": "Test guest user signup functionality with email validation",
+      "steps": [
+        "Navigate to guest signup page",
+        "Enter valid email address",
+        "Enter strong password (8+ characters)",
+        "Enter display name",
+        "Submit signup form",
+        "Verify successful registration and JWT token received"
+      ],
+      "expectedOutcome": "User successfully registered and logged in with JWT token",
+      "selectors": {
+        "emailInput": "[data-testid='signup-email-input']",
+        "passwordInput": "[data-testid='signup-password-input']",
+        "displayNameInput": "[data-testid='signup-display-name-input']",
+        "submitButton": "[data-testid='signup-submit-button']",
+        "successMessage": "[data-testid='signup-success']"
+      }
+    },
+    {
       "id": "auth-guest-login",
       "name": "Guest User Login Test",
       "category": "authentication",
       "priority": "critical",
       "description": "Test guest login functionality with valid credentials",
       "steps": [
-        "Navigate to guest login page (/guest/login)",
-        "Enter valid email address",
-        "Enter valid password",
-        "Click login submit button",
-        "Verify redirect to guest dashboard"
+        "Navigate to guest login page",
+        "Enter registered email address",
+        "Enter correct password",
+        "Submit login form",
+        "Verify successful login and redirect to dashboard"
       ],
-      "expectedOutcome": "Successfully logged in as guest and redirected to dashboard",
+      "expectedOutcome": "User successfully logged in and redirected to guest dashboard",
       "selectors": {
-        "emailInput": "[data-testid='email-input']",
-        "passwordInput": "[data-testid='password-input']",
-        "submitButton": "[data-testid='login-submit']",
-        "errorMessage": "[data-testid='error-message']"
-      }
-    },
-    {
-      "id": "auth-host-login",
-      "name": "Host User Login Test",
-      "category": "authentication",
-      "priority": "critical",
-      "description": "Test host login functionality with valid credentials",
-      "steps": [
-        "Navigate to guest login page (/guest/login)",
-        "Enter valid host email address",
-        "Enter valid password",
-        "Click login submit button",
-        "Verify redirect to host dashboard"
-      ],
-      "expectedOutcome": "Successfully logged in as host and redirected to host dashboard",
-      "selectors": {
-        "emailInput": "[data-testid='email-input']",
-        "passwordInput": "[data-testid='password-input']",
-        "submitButton": "[data-testid='login-submit']"
-      }
-    },
-    {
-      "id": "auth-guest-signup",
-      "name": "Guest User Registration Test",
-      "category": "authentication",
-      "priority": "critical",
-      "description": "Test guest user registration with valid information",
-      "steps": [
-        "Navigate to guest signup page (/guest/signup)",
-        "Enter valid email address",
-        "Enter strong password",
-        "Confirm password",
-        "Enter display name",
-        "Submit registration form",
-        "Verify account creation success"
-      ],
-      "expectedOutcome": "Guest account created successfully and user logged in",
-      "selectors": {
-        "emailInput": "[data-testid='signup-email']",
-        "passwordInput": "[data-testid='signup-password']",
-        "confirmPasswordInput": "[data-testid='confirm-password']",
-        "displayNameInput": "[data-testid='display-name']",
-        "submitButton": "[data-testid='signup-submit']"
+        "emailInput": "[data-testid='login-email-input']",
+        "passwordInput": "[data-testid='login-password-input']",
+        "submitButton": "[data-testid='login-submit-button']",
+        "dashboardHeader": "[data-testid='guest-dashboard-header']"
       }
     },
     {
@@ -70,23 +49,19 @@
       "name": "Host User Registration Test",
       "category": "authentication",
       "priority": "critical",
-      "description": "Test host user registration and onboarding flow",
+      "description": "Test host signup and onboarding wizard completion",
       "steps": [
-        "Navigate to host signup page (/host/signup)",
-        "Enter valid email address",
-        "Enter strong password",
-        "Confirm password",
-        "Enter display name",
-        "Submit registration form",
-        "Verify redirect to host onboarding wizard"
+        "Navigate to host signup page",
+        "Complete basic registration form",
+        "Submit signup form",
+        "Complete host onboarding wizard steps",
+        "Verify host account creation and dashboard access"
       ],
-      "expectedOutcome": "Host account created and onboarding wizard initiated",
+      "expectedOutcome": "Host account created and onboarding wizard completed",
       "selectors": {
-        "emailInput": "[data-testid='host-signup-email']",
-        "passwordInput": "[data-testid='host-signup-password']",
-        "confirmPasswordInput": "[data-testid='host-confirm-password']",
-        "displayNameInput": "[data-testid='host-display-name']",
-        "submitButton": "[data-testid='host-signup-submit']"
+        "hostSignupForm": "[data-testid='host-signup-form']",
+        "onboardingWizard": "[data-testid='host-onboarding-wizard']",
+        "hostDashboard": "[data-testid='host-dashboard']"
       }
     },
     {
@@ -94,99 +69,142 @@
       "name": "Password Reset Flow Test",
       "category": "authentication",
       "priority": "high",
-      "description": "Test password reset request and completion",
+      "description": "Test password reset request and completion flow",
       "steps": [
-        "Navigate to password reset page (/guest/password-reset)",
+        "Navigate to password reset page",
         "Enter registered email address",
-        "Submit password reset request",
-        "Verify success message displayed",
-        "Check email for reset link (simulated)",
-        "Complete password reset with new password"
+        "Submit reset request",
+        "Verify reset email sent confirmation",
+        "Enter reset code and new password",
+        "Submit password reset form",
+        "Verify password successfully updated"
       ],
-      "expectedOutcome": "Password reset email sent and password successfully updated",
+      "expectedOutcome": "Password successfully reset and user can login with new password",
       "selectors": {
-        "emailInput": "[data-testid='reset-email']",
-        "submitButton": "[data-testid='reset-submit']",
-        "successMessage": "[data-testid='reset-success']"
+        "resetEmailInput": "[data-testid='reset-email-input']",
+        "resetCodeInput": "[data-testid='reset-code-input']",
+        "newPasswordInput": "[data-testid='new-password-input']",
+        "resetSubmitButton": "[data-testid='reset-submit-button']"
       }
     },
     {
       "id": "villa-search-basic",
       "name": "Basic Villa Search Test",
-      "category": "search",
+      "category": "villa-search",
       "priority": "critical",
-      "description": "Test basic villa search functionality",
+      "description": "Test basic villa search functionality with location filter",
       "steps": [
-        "Navigate to homepage (/)",
-        "Enter destination in search box",
-        "Select check-in date",
-        "Select check-out date",
+        "Navigate to homepage",
+        "Enter location in search box",
+        "Select check-in and check-out dates",
         "Enter number of guests",
-        "Click search button",
-        "Verify search results page loads",
-        "Verify villa listings displayed"
+        "Submit search form",
+        "Verify search results displayed with matching villas"
       ],
-      "expectedOutcome": "Search results displayed with relevant villas",
+      "expectedOutcome": "Search results show villas matching location and date criteria",
       "selectors": {
-        "destinationInput": "[data-testid='search-destination']",
-        "checkinDate": "[data-testid='checkin-date']",
-        "checkoutDate": "[data-testid='checkout-date']",
-        "guestCount": "[data-testid='guest-count']",
-        "searchButton": "[data-testid='search-submit']",
-        "villaCard": "[data-testid='villa-card']"
+        "locationInput": "[data-testid='search-location-input']",
+        "checkinDatePicker": "[data-testid='search-checkin-date']",
+        "checkoutDatePicker": "[data-testid='search-checkout-date']",
+        "guestsInput": "[data-testid='search-guests-input']",
+        "searchButton": "[data-testid='search-submit-button']",
+        "searchResults": "[data-testid='search-results-container']"
+      }
+    },
+    {
+      "id": "villa-search-filters",
+      "name": "Advanced Villa Search Filters Test",
+      "category": "villa-search",
+      "priority": "high",
+      "description": "Test advanced search filters including price, bedrooms, amenities",
+      "steps": [
+        "Navigate to search results page",
+        "Apply price range filter",
+        "Select minimum bedrooms filter",
+        "Select amenity filters (beachfront, pet-friendly)",
+        "Apply filters and verify results update",
+        "Test sorting options (price low to high, rating)"
+      ],
+      "expectedOutcome": "Search results filtered and sorted according to selected criteria",
+      "selectors": {
+        "priceRangeSlider": "[data-testid='price-range-filter']",
+        "bedroomsFilter": "[data-testid='bedrooms-filter']",
+        "amenityFilters": "[data-testid='amenity-filters']",
+        "sortDropdown": "[data-testid='sort-dropdown']",
+        "filteredResults": "[data-testid='filtered-results']"
       }
     },
     {
       "id": "villa-details-view",
       "name": "Villa Details Page Test",
-      "category": "villa-browsing",
+      "category": "villa-details",
       "priority": "critical",
-      "description": "Test villa details page functionality",
+      "description": "Test villa details page displays all information correctly",
       "steps": [
-        "Navigate to villa details page (/villa/:villaId)",
+        "Navigate to specific villa details page",
         "Verify villa title and description displayed",
-        "Verify villa photos carousel works",
+        "Check photo gallery functionality",
         "Verify amenities list displayed",
+        "Check villa rules and policies",
         "Verify pricing information shown",
-        "Verify reviews section loaded",
-        "Verify booking widget present"
+        "Test calendar availability display"
       ],
-      "expectedOutcome": "All villa details displayed correctly with functional components",
+      "expectedOutcome": "All villa details, photos, amenities, and availability displayed correctly",
       "selectors": {
         "villaTitle": "[data-testid='villa-title']",
-        "photoCarousel": "[data-testid='photo-carousel']",
-        "amenitiesList": "[data-testid='amenities-list']",
-        "priceDisplay": "[data-testid='price-display']",
-        "reviewsSection": "[data-testid='reviews-section']",
-        "bookingWidget": "[data-testid='booking-widget']"
+        "photoGallery": "[data-testid='villa-photo-gallery']",
+        "amenitiesList": "[data-testid='villa-amenities']",
+        "villaRules": "[data-testid='villa-rules']",
+        "pricingInfo": "[data-testid='villa-pricing']",
+        "availabilityCalendar": "[data-testid='availability-calendar']"
       }
     },
     {
-      "id": "booking-flow-complete",
-      "name": "Complete Booking Flow Test",
+      "id": "booking-preview",
+      "name": "Booking Preview Test",
       "category": "booking",
       "priority": "critical",
-      "description": "Test complete villa booking process from start to confirmation",
+      "description": "Test booking preview functionality with price calculation",
       "steps": [
         "Navigate to villa details page",
         "Select check-in and check-out dates",
         "Enter number of guests",
-        "Click 'Book Now' button",
-        "Verify booking preview page loads",
-        "Review booking details and pricing",
-        "Enter payment information",
-        "Submit booking request",
-        "Verify booking confirmation page"
+        "Click 'Check Availability' button",
+        "Verify booking preview shows correct pricing breakdown",
+        "Verify total price calculation includes all fees"
       ],
-      "expectedOutcome": "Booking completed successfully with confirmation displayed",
+      "expectedOutcome": "Booking preview displays accurate pricing breakdown and availability",
       "selectors": {
-        "dateSelector": "[data-testid='booking-dates']",
-        "guestSelector": "[data-testid='booking-guests']",
-        "bookNowButton": "[data-testid='book-now']",
-        "bookingPreview": "[data-testid='booking-preview']",
-        "paymentForm": "[data-testid='payment-form']",
-        "confirmBooking": "[data-testid='confirm-booking']",
-        "confirmationMessage": "[data-testid='booking-confirmation']"
+        "bookingDates": "[data-testid='booking-date-inputs']",
+        "guestCount": "[data-testid='booking-guest-count']",
+        "checkAvailabilityButton": "[data-testid='check-availability-button']",
+        "pricingBreakdown": "[data-testid='pricing-breakdown']",
+        "totalPrice": "[data-testid='total-price']"
+      }
+    },
+    {
+      "id": "booking-creation",
+      "name": "Complete Booking Creation Test",
+      "category": "booking",
+      "priority": "critical",
+      "description": "Test complete booking flow from preview to confirmation",
+      "steps": [
+        "Complete booking preview successfully",
+        "Click 'Book Now' button",
+        "Fill in guest details form",
+        "Add special requests (optional)",
+        "Submit booking request",
+        "Verify booking confirmation page displayed",
+        "Check booking appears in user's trips"
+      ],
+      "expectedOutcome": "Booking successfully created and confirmation displayed",
+      "selectors": {
+        "bookNowButton": "[data-testid='book-now-button']",
+        "guestDetailsForm": "[data-testid='guest-details-form']",
+        "specialRequestsInput": "[data-testid='special-requests-input']",
+        "submitBookingButton": "[data-testid='submit-booking-button']",
+        "confirmationPage": "[data-testid='booking-confirmation']",
+        "bookingId": "[data-testid='booking-id']"
       }
     },
     {
@@ -194,24 +212,23 @@
       "name": "Guest Dashboard Navigation Test",
       "category": "dashboard",
       "priority": "high",
-      "description": "Test guest dashboard functionality and navigation",
+      "description": "Test guest dashboard navigation and content display",
       "steps": [
         "Login as guest user",
-        "Navigate to guest dashboard (/guest/dashboard)",
+        "Navigate to guest dashboard",
         "Verify upcoming trips section displayed",
-        "Verify past trips section displayed",
-        "Click on 'My Trips' navigation",
-        "Verify trips page loads",
-        "Navigate back to dashboard",
-        "Click on 'Wishlists' navigation"
+        "Check past trips section",
+        "Navigate to profile edit page",
+        "Navigate to wishlists page",
+        "Test notifications display"
       ],
-      "expectedOutcome": "Dashboard displays correctly with functional navigation",
+      "expectedOutcome": "All guest dashboard sections accessible and display correct content",
       "selectors": {
         "upcomingTrips": "[data-testid='upcoming-trips']",
         "pastTrips": "[data-testid='past-trips']",
-        "myTripsLink": "[data-testid='my-trips-link']",
+        "profileEditLink": "[data-testid='profile-edit-link']",
         "wishlistsLink": "[data-testid='wishlists-link']",
-        "dashboardContent": "[data-testid='dashboard-content']"
+        "notificationsPanel": "[data-testid='notifications-panel']"
       }
     },
     {
@@ -219,332 +236,239 @@
       "name": "Host Dashboard Navigation Test",
       "category": "dashboard",
       "priority": "high",
-      "description": "Test host dashboard functionality and villa management",
+      "description": "Test host dashboard navigation and villa management",
       "steps": [
         "Login as host user",
-        "Navigate to host dashboard (/host/dashboard)",
+        "Navigate to host dashboard",
         "Verify villa listings displayed",
-        "Verify reservation summary shown",
-        "Click on villa management section",
-        "Verify villa details can be accessed",
         "Check reservations section",
-        "Verify messaging inbox accessible"
+        "Navigate to add new villa page",
+        "Test villa editing functionality",
+        "Check earnings/analytics section"
       ],
-      "expectedOutcome": "Host dashboard displays with villa management features",
+      "expectedOutcome": "Host dashboard displays villas, reservations, and management tools",
       "selectors": {
-        "villaListings": "[data-testid='host-villas']",
-        "reservationSummary": "[data-testid='reservation-summary']",
-        "villaManagement": "[data-testid='villa-management']",
-        "reservationsSection": "[data-testid='reservations-section']",
-        "messagingInbox": "[data-testid='messaging-inbox']"
+        "villaListings": "[data-testid='host-villa-listings']",
+        "reservationsSection": "[data-testid='host-reservations']",
+        "addVillaButton": "[data-testid='add-villa-button']",
+        "editVillaButton": "[data-testid='edit-villa-button']",
+        "earningsSection": "[data-testid='earnings-section']"
       }
     },
     {
-      "id": "profile-edit-guest",
-      "name": "Guest Profile Edit Test",
-      "category": "profile-management",
+      "id": "host-villa-creation",
+      "name": "Host Villa Creation Test",
+      "category": "host-management",
+      "priority": "critical",
+      "description": "Test complete villa creation flow for hosts",
+      "steps": [
+        "Login as host user",
+        "Navigate to 'Add New Villa' page",
+        "Fill in basic villa information",
+        "Upload villa photos",
+        "Select amenities",
+        "Set pricing and availability",
+        "Add villa rules and policies",
+        "Submit villa creation form",
+        "Verify villa appears in host listings"
+      ],
+      "expectedOutcome": "New villa successfully created and appears in host dashboard",
+      "selectors": {
+        "villaInfoForm": "[data-testid='villa-info-form']",
+        "photoUpload": "[data-testid='photo-upload']",
+        "amenitySelection": "[data-testid='amenity-selection']",
+        "pricingForm": "[data-testid='pricing-form']",
+        "rulesForm": "[data-testid='rules-form']",
+        "submitVillaButton": "[data-testid='submit-villa-button']"
+      }
+    },
+    {
+      "id": "messaging-system",
+      "name": "Messaging System Test",
+      "category": "messaging",
+      "priority": "high",
+      "description": "Test real-time messaging between guests and hosts",
+      "steps": [
+        "Login as guest with active booking",
+        "Navigate to messaging inbox",
+        "Start new conversation with host",
+        "Send message to host",
+        "Verify message appears in conversation",
+        "Login as host and check for new message",
+        "Reply to guest message",
+        "Verify real-time message delivery"
+      ],
+      "expectedOutcome": "Messages sent and received in real-time between guest and host",
+      "selectors": {
+        "messagingInbox": "[data-testid='messaging-inbox']",
+        "newConversationButton": "[data-testid='new-conversation-button']",
+        "messageInput": "[data-testid='message-input']",
+        "sendMessageButton": "[data-testid='send-message-button']",
+        "conversationThread": "[data-testid='conversation-thread']"
+      }
+    },
+    {
+      "id": "review-system",
+      "name": "Review System Test",
+      "category": "reviews",
+      "priority": "high",
+      "description": "Test leaving and editing reviews for completed stays",
+      "steps": [
+        "Login as guest with completed booking",
+        "Navigate to completed trip",
+        "Click 'Leave Review' button",
+        "Fill in review form with rating and comments",
+        "Submit review",
+        "Verify review appears on villa page",
+        "Test editing review functionality",
+        "Verify updated review displayed"
+      ],
+      "expectedOutcome": "Review successfully submitted and displayed on villa page",
+      "selectors": {
+        "leaveReviewButton": "[data-testid='leave-review-button']",
+        "ratingStars": "[data-testid='rating-stars']",
+        "reviewTextarea": "[data-testid='review-textarea']",
+        "submitReviewButton": "[data-testid='submit-review-button']",
+        "editReviewButton": "[data-testid='edit-review-button']"
+      }
+    },
+    {
+      "id": "wishlist-management",
+      "name": "Wishlist Management Test",
+      "category": "wishlists",
       "priority": "medium",
-      "description": "Test guest profile editing functionality",
+      "description": "Test adding and removing villas from wishlists",
       "steps": [
         "Login as guest user",
-        "Navigate to profile edit page (/guest/profile/edit)",
+        "Browse villa listings",
+        "Click heart icon to add villa to wishlist",
+        "Navigate to wishlists page",
+        "Verify villa appears in wishlist",
+        "Remove villa from wishlist",
+        "Verify villa removed from wishlist"
+      ],
+      "expectedOutcome": "Villas can be added to and removed from wishlists successfully",
+      "selectors": {
+        "wishlistButton": "[data-testid='wishlist-button']",
+        "wishlistPage": "[data-testid='wishlist-page']",
+        "wishlistItems": "[data-testid='wishlist-items']",
+        "removeFromWishlistButton": "[data-testid='remove-wishlist-button']"
+      }
+    },
+    {
+      "id": "notification-system",
+      "name": "Notification System Test",
+      "category": "notifications",
+      "priority": "medium",
+      "description": "Test notification display and management",
+      "steps": [
+        "Login as user",
+        "Trigger notification event (new booking, message, etc.)",
+        "Verify notification appears in notification bar",
+        "Click on notification to view details",
+        "Mark notification as read",
+        "Verify notification marked as read",
+        "Check unread notification count updates"
+      ],
+      "expectedOutcome": "Notifications displayed correctly and can be marked as read",
+      "selectors": {
+        "notificationBar": "[data-testid='notification-bar']",
+        "notificationItem": "[data-testid='notification-item']",
+        "markReadButton": "[data-testid='mark-read-button']",
+        "unreadCount": "[data-testid='unread-count']"
+      }
+    },
+    {
+      "id": "profile-management",
+      "name": "User Profile Management Test",
+      "category": "profile",
+      "priority": "medium",
+      "description": "Test user profile editing and updates",
+      "steps": [
+        "Login as user",
+        "Navigate to profile edit page",
         "Update display name",
         "Update bio information",
-        "Update contact email",
         "Upload new profile photo",
+        "Update contact email",
         "Save profile changes",
-        "Verify success message displayed"
+        "Verify changes reflected in profile"
       ],
-      "expectedOutcome": "Profile updated successfully with changes saved",
+      "expectedOutcome": "Profile information successfully updated and saved",
       "selectors": {
         "displayNameInput": "[data-testid='profile-display-name']",
         "bioTextarea": "[data-testid='profile-bio']",
-        "contactEmailInput": "[data-testid='profile-contact-email']",
         "photoUpload": "[data-testid='profile-photo-upload']",
-        "saveButton": "[data-testid='profile-save']",
-        "successMessage": "[data-testid='profile-success']"
+        "contactEmailInput": "[data-testid='profile-contact-email']",
+        "saveProfileButton": "[data-testid='save-profile-button']"
       }
     },
     {
-      "id": "profile-edit-host",
-      "name": "Host Profile Edit Test",
-      "category": "profile-management",
+      "id": "responsive-design",
+      "name": "Responsive Design Test",
+      "category": "ui-ux",
       "priority": "medium",
-      "description": "Test host profile editing functionality",
+      "description": "Test application responsiveness across different screen sizes",
       "steps": [
-        "Login as host user",
-        "Navigate to host profile edit page (/host/profile/edit)",
-        "Update display name",
-        "Update bio information",
-        "Update contact email",
-        "Upload new profile photo",
-        "Save profile changes",
-        "Verify success message displayed"
+        "Open application in desktop browser",
+        "Verify layout displays correctly",
+        "Resize browser to tablet size",
+        "Verify responsive layout adjustments",
+        "Resize to mobile size",
+        "Test mobile navigation menu",
+        "Verify all functionality works on mobile"
       ],
-      "expectedOutcome": "Host profile updated successfully with changes saved",
+      "expectedOutcome": "Application displays and functions correctly across all screen sizes",
       "selectors": {
-        "displayNameInput": "[data-testid='host-profile-display-name']",
-        "bioTextarea": "[data-testid='host-profile-bio']",
-        "contactEmailInput": "[data-testid='host-profile-contact-email']",
-        "photoUpload": "[data-testid='host-profile-photo-upload']",
-        "saveButton": "[data-testid='host-profile-save']",
-        "successMessage": "[data-testid='host-profile-success']"
+        "mobileMenu": "[data-testid='mobile-menu']",
+        "desktopNav": "[data-testid='desktop-nav']",
+        "responsiveGrid": "[data-testid='responsive-grid']"
       }
     },
     {
-      "id": "messaging-send-message",
-      "name": "Send Message Test",
-      "category": "messaging",
+      "id": "error-handling",
+      "name": "Error Handling Test",
+      "category": "error-handling",
       "priority": "high",
-      "description": "Test sending messages between guest and host",
+      "description": "Test application error handling and user feedback",
       "steps": [
-        "Login as guest user",
-        "Navigate to messaging inbox (/messaging)",
-        "Select existing conversation or start new one",
-        "Navigate to message thread",
-        "Type message in text input",
-        "Click send button",
-        "Verify message appears in thread",
-        "Verify message timestamp displayed"
+        "Attempt login with invalid credentials",
+        "Verify error message displayed",
+        "Try to access protected route without authentication",
+        "Verify redirect to login page",
+        "Submit form with missing required fields",
+        "Verify validation errors shown",
+        "Test network error scenarios"
       ],
-      "expectedOutcome": "Message sent successfully and displayed in conversation",
+      "expectedOutcome": "Appropriate error messages displayed for all error scenarios",
       "selectors": {
-        "messageInbox": "[data-testid='message-inbox']",
-        "conversationList": "[data-testid='conversation-list']",
-        "messageInput": "[data-testid='message-input']",
-        "sendButton": "[data-testid='send-message']",
-        "messageThread": "[data-testid='message-thread']",
-        "messageItem": "[data-testid='message-item']"
+        "errorMessage": "[data-testid='error-message']",
+        "validationError": "[data-testid='validation-error']",
+        "networkError": "[data-testid='network-error']"
       }
     },
     {
-      "id": "review-leave-review",
-      "name": "Leave Review Test",
-      "category": "reviews",
-      "priority": "medium",
-      "description": "Test leaving a review for completed stay",
-      "steps": [
-        "Login as guest user",
-        "Navigate to leave review page (/review/leave/:bookingId)",
-        "Select star rating (1-5 stars)",
-        "Enter review title",
-        "Enter detailed review text",
-        "Submit review",
-        "Verify review submission success",
-        "Verify review appears on villa page"
-      ],
-      "expectedOutcome": "Review submitted successfully and visible on villa page",
-      "selectors": {
-        "starRating": "[data-testid='star-rating']",
-        "reviewTitle": "[data-testid='review-title']",
-        "reviewText": "[data-testid='review-text']",
-        "submitReview": "[data-testid='submit-review']",
-        "reviewSuccess": "[data-testid='review-success']"
-      }
-    },
-    {
-      "id": "wishlist-add-remove",
-      "name": "Wishlist Add/Remove Test",
-      "category": "wishlists",
-      "priority": "medium",
-      "description": "Test adding and removing villas from wishlist",
-      "steps": [
-        "Login as guest user",
-        "Navigate to villa details page",
-        "Click heart icon to add to wishlist",
-        "Verify villa added to wishlist",
-        "Navigate to wishlists page (/guest/wishlists)",
-        "Verify villa appears in wishlist",
-        "Click remove from wishlist",
-        "Verify villa removed from wishlist"
-      ],
-      "expectedOutcome": "Villa successfully added to and removed from wishlist",
-      "selectors": {
-        "heartIcon": "[data-testid='wishlist-heart']",
-        "wishlistPage": "[data-testid='wishlists-page']",
-        "wishlistItem": "[data-testid='wishlist-item']",
-        "removeButton": "[data-testid='remove-wishlist']"
-      }
-    },
-    {
-      "id": "host-onboarding-wizard",
-      "name": "Host Onboarding Wizard Test",
-      "category": "onboarding",
-      "priority": "high",
-      "description": "Test complete host onboarding process",
-      "steps": [
-        "Register as new host user",
-        "Navigate to onboarding wizard (/host/onboarding)",
-        "Complete personal information step",
-        "Complete property information step",
-        "Upload property photos",
-        "Set pricing and availability",
-        "Review and submit onboarding",
-        "Verify host account activated"
-      ],
-      "expectedOutcome": "Host onboarding completed successfully and account activated",
-      "selectors": {
-        "onboardingWizard": "[data-testid='onboarding-wizard']",
-        "personalInfoStep": "[data-testid='personal-info-step']",
-        "propertyInfoStep": "[data-testid='property-info-step']",
-        "photoUploadStep": "[data-testid='photo-upload-step']",
-        "pricingStep": "[data-testid='pricing-step']",
-        "reviewStep": "[data-testid='review-step']",
-        "submitOnboarding": "[data-testid='submit-onboarding']"
-      }
-    },
-    {
-      "id": "navigation-top-nav",
-      "name": "Top Navigation Test",
+      "id": "navigation-flow",
+      "name": "Application Navigation Flow Test",
       "category": "navigation",
       "priority": "high",
-      "description": "Test top navigation functionality across pages",
+      "description": "Test overall application navigation and routing",
       "steps": [
         "Navigate to homepage",
-        "Verify logo links to homepage",
-        "Click search/explore link",
-        "Verify search page loads",
-        "Click login/signup links",
-        "Verify auth pages load",
-        "Test responsive navigation menu",
-        "Verify all navigation links functional"
+        "Test all navigation menu links",
+        "Verify correct pages load",
+        "Test browser back/forward buttons",
+        "Test deep linking to specific pages",
+        "Verify 404 page for invalid routes",
+        "Test protected route redirects"
       ],
-      "expectedOutcome": "All navigation links work correctly across devices",
+      "expectedOutcome": "All navigation works correctly with proper routing",
       "selectors": {
-        "topNav": "[data-testid='top-nav']",
-        "logo": "[data-testid='nav-logo']",
-        "searchLink": "[data-testid='nav-search']",
-        "loginLink": "[data-testid='nav-login']",
-        "signupLink": "[data-testid='nav-signup']",
-        "mobileMenu": "[data-testid='mobile-menu']"
-      }
-    },
-    {
-      "id": "form-validation-login",
-      "name": "Login Form Validation Test",
-      "category": "forms",
-      "priority": "medium",
-      "description": "Test login form validation with invalid inputs",
-      "steps": [
-        "Navigate to login page",
-        "Submit form with empty fields",
-        "Verify required field errors shown",
-        "Enter invalid email format",
-        "Verify email format error shown",
-        "Enter valid email but wrong password",
-        "Verify authentication error shown",
-        "Test password visibility toggle"
-      ],
-      "expectedOutcome": "All form validation errors displayed correctly",
-      "selectors": {
-        "emailInput": "[data-testid='email-input']",
-        "passwordInput": "[data-testid='password-input']",
-        "submitButton": "[data-testid='login-submit']",
-        "emailError": "[data-testid='email-error']",
-        "passwordError": "[data-testid='password-error']",
-        "authError": "[data-testid='auth-error']",
-        "passwordToggle": "[data-testid='password-toggle']"
-      }
-    },
-    {
-      "id": "form-validation-signup",
-      "name": "Signup Form Validation Test",
-      "category": "forms",
-      "priority": "medium",
-      "description": "Test signup form validation with various invalid inputs",
-      "steps": [
-        "Navigate to signup page",
-        "Submit form with empty fields",
-        "Verify all required field errors",
-        "Enter mismatched passwords",
-        "Verify password confirmation error",
-        "Enter weak password",
-        "Verify password strength error",
-        "Enter existing email address",
-        "Verify duplicate email error"
-      ],
-      "expectedOutcome": "All signup validation errors handled correctly",
-      "selectors": {
-        "emailInput": "[data-testid='signup-email']",
-        "passwordInput": "[data-testid='signup-password']",
-        "confirmPasswordInput": "[data-testid='confirm-password']",
-        "displayNameInput": "[data-testid='display-name']",
-        "submitButton": "[data-testid='signup-submit']",
-        "passwordMismatchError": "[data-testid='password-mismatch-error']",
-        "passwordStrengthError": "[data-testid='password-strength-error']",
-        "duplicateEmailError": "[data-testid='duplicate-email-error']"
-      }
-    },
-    {
-      "id": "responsive-design-mobile",
-      "name": "Mobile Responsive Design Test",
-      "category": "responsive",
-      "priority": "medium",
-      "description": "Test application responsiveness on mobile devices",
-      "steps": [
-        "Set viewport to mobile size (375px width)",
-        "Navigate to homepage",
-        "Verify mobile navigation menu works",
-        "Test search functionality on mobile",
-        "Navigate to villa details page",
-        "Verify photo carousel works on mobile",
-        "Test booking widget on mobile",
-        "Verify forms are mobile-friendly"
-      ],
-      "expectedOutcome": "Application fully functional and well-designed on mobile",
-      "selectors": {
-        "mobileNav": "[data-testid='mobile-nav']",
-        "hamburgerMenu": "[data-testid='hamburger-menu']",
-        "mobileSearch": "[data-testid='mobile-search']",
-        "mobileBookingWidget": "[data-testid='mobile-booking-widget']",
-        "mobilePhotoCarousel": "[data-testid='mobile-photo-carousel']"
-      }
-    },
-    {
-      "id": "error-handling-404",
-      "name": "404 Error Page Test",
-      "category": "error-handling",
-      "priority": "low",
-      "description": "Test 404 error page functionality",
-      "steps": [
-        "Navigate to non-existent URL",
-        "Verify 404 error page displays",
-        "Verify error message is user-friendly",
-        "Click 'Go Home' button",
-        "Verify redirect to homepage",
-        "Test navigation from 404 page",
-        "Verify search functionality works from 404 page"
-      ],
-      "expectedOutcome": "404 page displays correctly with functional navigation options",
-      "selectors": {
-        "errorPage": "[data-testid='404-page']",
-        "errorMessage": "[data-testid='404-message']",
-        "goHomeButton": "[data-testid='go-home-button']",
-        "errorNavigation": "[data-testid='error-navigation']"
-      }
-    },
-    {
-      "id": "error-handling-network",
-      "name": "Network Error Handling Test",
-      "category": "error-handling",
-      "priority": "medium",
-      "description": "Test application behavior during network errors",
-      "steps": [
-        "Simulate network disconnection",
-        "Attempt to login",
-        "Verify network error message displayed",
-        "Attempt to search for villas",
-        "Verify appropriate error handling",
-        "Restore network connection",
-        "Verify application recovers gracefully",
-        "Test retry functionality"
-      ],
-      "expectedOutcome": "Network errors handled gracefully with user-friendly messages",
-      "selectors": {
-        "networkError": "[data-testid='network-error']",
-        "retryButton": "[data-testid='retry-button']",
-        "errorBoundary": "[data-testid='error-boundary']",
-        "connectionStatus": "[data-testid='connection-status']"
+        "navMenu": "[data-testid='nav-menu']",
+        "homeLink": "[data-testid='home-link']",
+        "searchLink": "[data-testid='search-link']",
+        "dashboardLink": "[data-testid='dashboard-link']",
+        "notFoundPage": "[data-testid='404-page']"
       }
     }
   ]
