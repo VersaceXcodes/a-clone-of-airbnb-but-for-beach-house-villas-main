@@ -3,33 +3,32 @@
     "React",
     "TypeScript",
     "Vite",
+    "Express.js",
     "Node.js",
-    "Express",
     "PostgreSQL",
     "PGLite",
-    "Tailwind CSS",
     "Zustand",
-    "React Query",
     "React Router",
+    "TanStack Query",
+    "Tailwind CSS",
+    "Radix UI",
     "Socket.io",
     "Zod",
     "Axios",
-    "Radix UI",
-    "Headless UI",
-    "React Icons",
-    "Date-fns",
-    "Framer Motion"
+    "bcryptjs",
+    "JWT"
   ],
   "features": [
     {
       "name": "User Authentication",
-      "description": "Complete authentication system with login, signup, password reset for both guests and hosts",
+      "description": "Complete authentication system with login, signup, password reset, and session management",
       "files": [
         "src/components/views/UV_GuestLogin.tsx",
         "src/components/views/UV_GuestSignup.tsx",
         "src/components/views/UV_HostSignup.tsx",
         "src/components/views/UV_PasswordReset.tsx",
-        "src/stores/userSession.ts"
+        "src/stores/userSession.ts",
+        "backend/server.ts"
       ]
     },
     {
@@ -38,27 +37,18 @@
       "files": [
         "src/components/views/UV_Homepage.tsx",
         "src/components/views/UV_SearchResults.tsx",
-        "src/components/views/GV_TopNav.tsx"
+        "src/components/views/UV_VillaDetails.tsx",
+        "src/store/main.tsx"
       ]
     },
     {
-      "name": "Villa Details and Booking",
-      "description": "Detailed villa pages with photos, amenities, reviews, and booking functionality",
+      "name": "Booking System",
+      "description": "Complete booking flow from villa selection to payment confirmation",
       "files": [
-        "src/components/views/UV_VillaDetails.tsx",
         "src/components/views/UV_BookingStart.tsx",
         "src/components/views/UV_BookingConfirmation.tsx",
-        "src/components/views/UV_BookingFailure.tsx"
-      ]
-    },
-    {
-      "name": "Guest Dashboard",
-      "description": "Guest user dashboard with trip management, profile editing, and wishlists",
-      "files": [
-        "src/components/views/UV_GuestDashboard.tsx",
-        "src/components/views/UV_MyTrips.tsx",
-        "src/components/views/UV_Wishlists.tsx",
-        "src/components/views/UV_GuestProfileEdit.tsx"
+        "src/components/views/UV_BookingFailure.tsx",
+        "src/components/views/UV_ReservationDetail.tsx"
       ]
     },
     {
@@ -73,11 +63,22 @@
       ]
     },
     {
+      "name": "Guest Dashboard",
+      "description": "Guest profile management, trip history, and wishlist functionality",
+      "files": [
+        "src/components/views/UV_GuestDashboard.tsx",
+        "src/components/views/UV_GuestProfileEdit.tsx",
+        "src/components/views/UV_MyTrips.tsx",
+        "src/components/views/UV_Wishlists.tsx"
+      ]
+    },
+    {
       "name": "Messaging System",
-      "description": "Real-time messaging between guests and hosts with thread management",
+      "description": "Real-time messaging between hosts and guests with thread management",
       "files": [
         "src/components/views/UV_MessagingInbox.tsx",
-        "src/components/views/UV_MessagingThread.tsx"
+        "src/components/views/UV_MessagingThread.tsx",
+        "src/store/main.tsx"
       ]
     },
     {
@@ -89,13 +90,8 @@
       ]
     },
     {
-      "name": "Reservation Management",
-      "description": "Complete booking lifecycle management with payment tracking",
-      "files": ["src/components/views/UV_ReservationDetail.tsx"]
-    },
-    {
-      "name": "Global Navigation",
-      "description": "Responsive navigation with search, user menus, and notifications",
+      "name": "Navigation and Layout",
+      "description": "Responsive navigation, footer, and notification system",
       "files": [
         "src/components/views/GV_TopNav.tsx",
         "src/components/views/GV_Footer.tsx",
@@ -103,9 +99,17 @@
       ]
     },
     {
-      "name": "State Management",
-      "description": "Centralized state management with persistence and real-time updates",
-      "files": ["src/store/main.tsx", "src/stores/userSession.ts"]
+      "name": "Error Handling",
+      "description": "Comprehensive error handling with 404 pages and error states",
+      "files": [
+        "src/components/views/UV_404NotFound.tsx",
+        "src/components/views/UV_ErrorState.tsx"
+      ]
+    },
+    {
+      "name": "Legal and Policies",
+      "description": "Legal policy pages and terms of service",
+      "files": ["src/components/views/UV_LegalPolicy.tsx"]
     }
   ],
   "database_tables": [
@@ -132,30 +136,28 @@
     "password_resets"
   ],
   "api_endpoints": [
-    "/health",
-    "/villas/featured",
-    "/villas/popular-locations",
-    "/villas/search",
-    "/villas/:id",
-    "/villas/:id/photos",
-    "/villas/:id/amenities",
-    "/villas/:id/rules",
-    "/villas/:id/calendar",
-    "/villas/:id/pricing-overrides",
-    "/villas/:id/reviews",
     "/auth/login",
     "/auth/signup",
     "/auth/logout",
     "/auth/password-reset",
-    "/users/profile",
+    "/users/:id",
+    "/users/:id/profile",
+    "/villas/search",
+    "/villas/featured",
+    "/villas/popular-locations",
+    "/villas/:id",
+    "/villas/:id/photos",
+    "/villas/:id/amenities",
+    "/villas/:id/calendar",
+    "/villas/:id/reviews",
     "/bookings",
     "/bookings/:id",
-    "/bookings/preview",
-    "/messaging/threads",
-    "/messaging/threads/:id/messages",
+    "/bookings/:id/payment",
     "/wishlists",
     "/wishlists/:id/items",
+    "/messages/threads",
+    "/messages/threads/:id",
     "/notifications",
-    "/amenities"
+    "/reviews"
   ]
 }
