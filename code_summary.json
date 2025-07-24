@@ -3,108 +3,109 @@
     "React",
     "TypeScript",
     "Vite",
-    "Express.js",
     "Node.js",
+    "Express",
     "PostgreSQL",
-    "Socket.io",
-    "TailwindCSS",
-    "Radix UI",
-    "React Router",
-    "Redux Toolkit",
-    "React Query",
     "Zustand",
+    "React Router",
+    "TanStack Query",
+    "Tailwind CSS",
+    "Radix UI",
+    "Socket.io",
     "Zod",
-    "bcryptjs",
-    "JWT"
+    "Axios"
   ],
   "features": [
     {
       "name": "User Authentication",
-      "description": "Complete auth system with signup, login, password reset",
+      "description": "Complete authentication system with login, signup, password reset for both guests and hosts",
       "files": [
         "src/components/views/UV_GuestLogin.tsx",
         "src/components/views/UV_GuestSignup.tsx",
+        "src/components/views/UV_HostSignup.tsx",
         "src/components/views/UV_PasswordReset.tsx",
-        "src/stores/userSession.ts",
-        "backend/server.ts"
+        "src/stores/userSession.ts"
       ]
     },
     {
-      "name": "Villa Management",
-      "description": "Villa listing, search, details, and host management",
+      "name": "Villa Search and Discovery",
+      "description": "Homepage with search functionality, featured villas, and popular destinations",
       "files": [
         "src/components/views/UV_Homepage.tsx",
         "src/components/views/UV_SearchResults.tsx",
-        "src/components/views/UV_VillaDetails.tsx",
-        "src/components/views/UV_HostVillaDetail.tsx",
-        "backend/server.ts"
+        "src/components/views/UV_VillaDetails.tsx"
       ]
     },
     {
       "name": "Booking System",
-      "description": "Complete booking flow with preview, confirmation, and payment",
+      "description": "Complete booking flow from villa selection to confirmation and payment",
       "files": [
         "src/components/views/UV_BookingStart.tsx",
         "src/components/views/UV_BookingConfirmation.tsx",
-        "src/components/views/UV_BookingFailure.tsx",
-        "backend/server.ts"
-      ]
-    },
-    {
-      "name": "Host Dashboard",
-      "description": "Host management interface for villas and reservations",
-      "files": [
-        "src/components/views/UV_HostDashboard.tsx",
-        "src/components/views/UV_HostOnboardingWizard.tsx",
-        "src/components/views/UV_HostReservations.tsx",
-        "src/components/views/UV_HostSignup.tsx",
-        "backend/server.ts"
+        "src/components/views/UV_BookingFailure.tsx"
       ]
     },
     {
       "name": "Guest Dashboard",
-      "description": "Guest profile management and trip tracking",
+      "description": "Guest user dashboard with trip management and profile editing",
       "files": [
         "src/components/views/UV_GuestDashboard.tsx",
         "src/components/views/UV_GuestProfileEdit.tsx",
-        "src/components/views/UV_MyTrips.tsx",
-        "src/components/views/UV_Wishlists.tsx",
-        "backend/server.ts"
+        "src/components/views/UV_MyTrips.tsx"
+      ]
+    },
+    {
+      "name": "Host Management",
+      "description": "Host dashboard, villa management, onboarding wizard, and reservations",
+      "files": [
+        "src/components/views/UV_HostDashboard.tsx",
+        "src/components/views/UV_HostOnboardingWizard.tsx",
+        "src/components/views/UV_HostVillaDetail.tsx",
+        "src/components/views/UV_HostReservations.tsx",
+        "src/components/views/UV_HostProfileEdit.tsx"
       ]
     },
     {
       "name": "Messaging System",
-      "description": "Real-time messaging between hosts and guests",
+      "description": "Real-time messaging between guests and hosts with thread management",
       "files": [
         "src/components/views/UV_MessagingInbox.tsx",
-        "src/components/views/UV_MessagingThread.tsx",
-        "backend/server.ts"
+        "src/components/views/UV_MessagingThread.tsx"
       ]
     },
     {
       "name": "Review System",
-      "description": "Guest and host review functionality",
+      "description": "Guest and host review functionality with editing capabilities",
       "files": [
         "src/components/views/UV_LeaveReview.tsx",
-        "src/components/views/UV_ReviewEdit.tsx",
-        "backend/server.ts"
+        "src/components/views/UV_ReviewEdit.tsx"
       ]
     },
     {
-      "name": "Notification System",
-      "description": "Real-time notifications for users",
-      "files": [
-        "src/components/views/GV_NotificationBar.tsx",
-        "backend/server.ts"
-      ]
+      "name": "Wishlist Management",
+      "description": "Save and manage favorite villas in wishlists",
+      "files": ["src/components/views/UV_Wishlists.tsx"]
     },
     {
-      "name": "Navigation & Layout",
-      "description": "Global navigation and layout components",
+      "name": "Navigation and Layout",
+      "description": "Responsive navigation with search, user menus, and footer",
       "files": [
         "src/components/views/GV_TopNav.tsx",
         "src/components/views/GV_Footer.tsx",
-        "src/App.tsx"
+        "src/components/views/GV_NotificationBar.tsx"
+      ]
+    },
+    {
+      "name": "State Management",
+      "description": "Global application state with Zustand including user session, search, messaging, and booking cart",
+      "files": ["src/store/main.tsx", "src/stores/userSession.ts"]
+    },
+    {
+      "name": "Error Handling",
+      "description": "Error boundaries and 404 page handling",
+      "files": [
+        "src/components/views/UV_404NotFound.tsx",
+        "src/components/views/UV_ErrorState.tsx"
       ]
     }
   ],
@@ -120,40 +121,44 @@
     "villa_wishlists",
     "wishlist_items",
     "bookings",
-    "booking_guests",
     "booking_histories",
+    "booking_guests",
     "booking_payments",
     "message_threads",
     "messages",
     "user_reviews",
     "guest_reviews",
+    "superhost_history",
     "notifications",
     "password_resets"
   ],
   "api_endpoints": [
-    "/auth/signup",
-    "/auth/login",
-    "/auth/password/request-reset",
-    "/auth/password/reset",
-    "/account/me",
-    "/account/notifications",
-    "/account/notifications/unread_count",
-    "/account/notifications/:notification_id/read",
-    "/villas",
     "/villas/featured",
     "/villas/popular-locations",
-    "/villas/:villa_id",
-    "/villas/:villa_id/photos",
-    "/villas/:villa_id/amenities",
-    "/villas/:villa_id/rules",
-    "/villas/:villa_id/calendar",
-    "/villas/:villa_id/pricing-overrides",
-    "/villas/:villa_id/reviews",
-    "/villas/:villa_id/booking/preview",
-    "/villas/:villa_id/booking",
-    "/villas/amenities",
-    "/host/villas",
-    "/villa/:villa_id/calendar",
-    "/villa/:villa_id/pricing-overrides"
+    "/auth/login",
+    "/auth/signup",
+    "/auth/logout",
+    "/users/profile",
+    "/bookings",
+    "/messages",
+    "/reviews",
+    "/wishlists"
+  ],
+  "key_components": {
+    "ui_library": "Radix UI with custom Tailwind styling",
+    "routing": "React Router v6 with protected routes",
+    "data_fetching": "TanStack Query for server state management",
+    "forms": "React Hook Form with Zod validation",
+    "real_time": "Socket.io for live messaging and notifications",
+    "styling": "Tailwind CSS with responsive design",
+    "build_tool": "Vite for fast development and building"
+  },
+  "architecture_patterns": [
+    "Component-based architecture with TypeScript",
+    "Global state management with Zustand",
+    "Protected route authentication",
+    "Error boundary pattern for error handling",
+    "Responsive mobile-first design",
+    "Real-time updates with WebSocket connections"
   ]
 }

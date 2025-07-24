@@ -1,596 +1,251 @@
 {
   "testCases": [
     {
-      "id": "auth-guest-signup",
-      "name": "Guest User Registration Test",
-      "category": "authentication",
+      "id": "functional-app-test",
+      "name": "Functional Application Test",
+      "category": "functionality",
       "priority": "critical",
-      "description": "Test guest user registration with email verification",
+      "description": "Verify the application has actual functionality beyond basic placeholder",
       "steps": [
-        "Navigate to guest signup page",
-        "Enter valid email, password, and display name",
-        "Submit registration form",
-        "Verify successful registration and redirect to dashboard"
+        "Navigate to application homepage",
+        "Verify multiple interactive elements exist (search bar, buttons, navigation links)",
+        "Check for proper navigation structure with BeachStay Villas branding",
+        "Verify application shows real villa listings and search functionality",
+        "Confirm the app is not just a 'Vite + React' placeholder"
       ],
-      "expectedOutcome": "Successfully registered as guest user with JWT token",
-      "selectors": {
-        "emailInput": "[data-testid='signup-email-input']",
-        "passwordInput": "[data-testid='signup-password-input']",
-        "displayNameInput": "[data-testid='signup-display-name-input']",
-        "submitButton": "[data-testid='signup-submit-button']"
-      }
+      "expectedOutcome": "Application shows functional BeachStay Villas features with villa search, navigation, and interactive elements",
+      "failureCondition": "If page only shows 'Vite + React' placeholder or lacks villa rental functionality, this test should FAIL"
     },
     {
-      "id": "auth-guest-login",
-      "name": "Guest User Login Test",
-      "category": "authentication",
-      "priority": "critical",
-      "description": "Test guest user login functionality",
-      "steps": [
-        "Navigate to guest login page",
-        "Enter valid email and password",
-        "Submit login form",
-        "Verify successful login and redirect to dashboard"
-      ],
-      "expectedOutcome": "Successfully logged in as guest user",
-      "selectors": {
-        "emailInput": "[data-testid='login-email-input']",
-        "passwordInput": "[data-testid='login-password-input']",
-        "submitButton": "[data-testid='login-submit-button']"
-      }
-    },
-    {
-      "id": "auth-host-signup",
-      "name": "Host User Registration Test",
-      "category": "authentication",
-      "priority": "critical",
-      "description": "Test host user registration process",
-      "steps": [
-        "Navigate to host signup page",
-        "Enter valid host registration details",
-        "Submit registration form",
-        "Verify successful host registration"
-      ],
-      "expectedOutcome": "Successfully registered as host user",
-      "selectors": {
-        "emailInput": "[data-testid='host-signup-email']",
-        "passwordInput": "[data-testid='host-signup-password']",
-        "submitButton": "[data-testid='host-signup-submit']"
-      }
-    },
-    {
-      "id": "auth-password-reset",
-      "name": "Password Reset Flow Test",
-      "category": "authentication",
+      "id": "homepage-content-test",
+      "name": "Homepage Content and Features Test",
+      "category": "interface",
       "priority": "high",
-      "description": "Test password reset request and completion",
+      "description": "Test that homepage displays proper content and functionality",
       "steps": [
-        "Navigate to password reset page",
-        "Enter email address",
-        "Submit reset request",
-        "Verify reset email sent confirmation"
+        "Load the homepage at root URL",
+        "Verify hero section with beach villa background image",
+        "Check search form with location, check-in, check-out, and guests fields",
+        "Verify 'Featured Villas' section displays villa cards",
+        "Check 'Popular Beach Destinations' section",
+        "Verify navigation bar with BeachStay Villas logo and menu items",
+        "Test search functionality by entering a location"
       ],
-      "expectedOutcome": "Password reset email sent successfully",
-      "selectors": {
-        "emailInput": "[data-testid='reset-email-input']",
-        "submitButton": "[data-testid='reset-submit-button']"
-      }
+      "expectedOutcome": "Homepage displays complete villa rental interface with search, featured villas, and destinations"
     },
     {
-      "id": "villa-search-basic",
-      "name": "Basic Villa Search Test",
-      "category": "villa-search",
-      "priority": "critical",
-      "description": "Test basic villa search functionality",
-      "steps": [
-        "Navigate to homepage",
-        "Enter search location",
-        "Select check-in and check-out dates",
-        "Enter number of guests",
-        "Submit search form",
-        "Verify search results display"
-      ],
-      "expectedOutcome": "Villa search results displayed with matching properties",
-      "selectors": {
-        "locationInput": "[data-testid='search-location-input']",
-        "checkinInput": "[data-testid='search-checkin-input']",
-        "checkoutInput": "[data-testid='search-checkout-input']",
-        "guestsInput": "[data-testid='search-guests-input']",
-        "searchButton": "[data-testid='search-submit-button']"
-      }
-    },
-    {
-      "id": "villa-search-filters",
-      "name": "Villa Search with Filters Test",
-      "category": "villa-search",
-      "priority": "high",
-      "description": "Test villa search with price and amenity filters",
-      "steps": [
-        "Navigate to search results page",
-        "Apply price range filter",
-        "Select amenity filters",
-        "Apply bedroom/bathroom filters",
-        "Verify filtered results"
-      ],
-      "expectedOutcome": "Search results filtered according to selected criteria",
-      "selectors": {
-        "priceMinInput": "[data-testid='filter-price-min']",
-        "priceMaxInput": "[data-testid='filter-price-max']",
-        "bedroomsFilter": "[data-testid='filter-bedrooms']",
-        "amenityFilter": "[data-testid='filter-amenities']"
-      }
-    },
-    {
-      "id": "villa-details-view",
-      "name": "Villa Details Page Test",
-      "category": "villa-details",
-      "priority": "critical",
-      "description": "Test villa details page display and functionality",
-      "steps": [
-        "Navigate to villa details page",
-        "Verify villa information displays correctly",
-        "Check photo gallery functionality",
-        "Verify amenities and rules display",
-        "Test calendar availability view"
-      ],
-      "expectedOutcome": "Villa details page displays all information correctly",
-      "selectors": {
-        "villaTitle": "[data-testid='villa-title']",
-        "photoGallery": "[data-testid='villa-photos']",
-        "amenitiesList": "[data-testid='villa-amenities']",
-        "calendarView": "[data-testid='villa-calendar']"
-      }
-    },
-    {
-      "id": "booking-preview",
-      "name": "Booking Preview Test",
-      "category": "booking",
-      "priority": "critical",
-      "description": "Test booking preview with price calculation",
-      "steps": [
-        "Navigate to villa details page",
-        "Select check-in and check-out dates",
-        "Enter number of guests",
-        "Click preview booking",
-        "Verify price breakdown displays",
-        "Check availability confirmation"
-      ],
-      "expectedOutcome": "Booking preview shows accurate pricing and availability",
-      "selectors": {
-        "checkinDate": "[data-testid='booking-checkin']",
-        "checkoutDate": "[data-testid='booking-checkout']",
-        "guestCount": "[data-testid='booking-guests']",
-        "previewButton": "[data-testid='booking-preview-button']",
-        "priceBreakdown": "[data-testid='price-breakdown']"
-      }
-    },
-    {
-      "id": "booking-creation",
-      "name": "Complete Booking Creation Test",
-      "category": "booking",
-      "priority": "critical",
-      "description": "Test complete booking flow from preview to confirmation",
-      "steps": [
-        "Complete booking preview",
-        "Enter guest details",
-        "Add special requests",
-        "Submit booking request",
-        "Verify booking confirmation",
-        "Check booking appears in user dashboard"
-      ],
-      "expectedOutcome": "Booking created successfully with confirmation",
-      "selectors": {
-        "guestNameInput": "[data-testid='guest-name-input']",
-        "guestEmailInput": "[data-testid='guest-email-input']",
-        "specialRequestsInput": "[data-testid='special-requests-input']",
-        "bookingSubmitButton": "[data-testid='booking-submit-button']"
-      }
-    },
-    {
-      "id": "guest-dashboard-access",
-      "name": "Guest Dashboard Access Test",
-      "category": "dashboard",
-      "priority": "high",
-      "description": "Test guest dashboard access and content display",
-      "steps": [
-        "Login as guest user",
-        "Navigate to guest dashboard",
-        "Verify dashboard sections display",
-        "Check upcoming trips section",
-        "Verify profile information"
-      ],
-      "expectedOutcome": "Guest dashboard displays with all sections accessible",
-      "selectors": {
-        "dashboardHeader": "[data-testid='guest-dashboard-header']",
-        "upcomingTrips": "[data-testid='upcoming-trips-section']",
-        "profileSection": "[data-testid='profile-section']"
-      }
-    },
-    {
-      "id": "host-dashboard-access",
-      "name": "Host Dashboard Access Test",
-      "category": "dashboard",
-      "priority": "high",
-      "description": "Test host dashboard access and villa management",
-      "steps": [
-        "Login as host user",
-        "Navigate to host dashboard",
-        "Verify villa listings display",
-        "Check reservation management section",
-        "Test add new villa button"
-      ],
-      "expectedOutcome": "Host dashboard displays with villa management features",
-      "selectors": {
-        "hostDashboardHeader": "[data-testid='host-dashboard-header']",
-        "villaListings": "[data-testid='host-villa-listings']",
-        "reservationsSection": "[data-testid='host-reservations']",
-        "addVillaButton": "[data-testid='add-villa-button']"
-      }
-    },
-    {
-      "id": "profile-edit-guest",
-      "name": "Guest Profile Edit Test",
-      "category": "profile",
-      "priority": "medium",
-      "description": "Test guest profile editing functionality",
-      "steps": [
-        "Login as guest user",
-        "Navigate to profile edit page",
-        "Update display name and bio",
-        "Upload new profile photo",
-        "Save profile changes",
-        "Verify changes are saved"
-      ],
-      "expectedOutcome": "Guest profile updated successfully",
-      "selectors": {
-        "displayNameInput": "[data-testid='profile-display-name']",
-        "bioTextarea": "[data-testid='profile-bio']",
-        "photoUpload": "[data-testid='profile-photo-upload']",
-        "saveButton": "[data-testid='profile-save-button']"
-      }
-    },
-    {
-      "id": "profile-edit-host",
-      "name": "Host Profile Edit Test",
-      "category": "profile",
-      "priority": "medium",
-      "description": "Test host profile editing with additional host fields",
-      "steps": [
-        "Login as host user",
-        "Navigate to host profile edit page",
-        "Update host-specific information",
-        "Add contact details",
-        "Save profile changes",
-        "Verify host profile updated"
-      ],
-      "expectedOutcome": "Host profile updated with host-specific information",
-      "selectors": {
-        "hostDisplayName": "[data-testid='host-profile-name']",
-        "contactEmail": "[data-testid='host-contact-email']",
-        "hostBio": "[data-testid='host-bio']",
-        "saveHostProfile": "[data-testid='host-profile-save']"
-      }
-    },
-    {
-      "id": "host-onboarding-wizard",
-      "name": "Host Onboarding Wizard Test",
-      "category": "onboarding",
-      "priority": "high",
-      "description": "Test multi-step host onboarding process",
-      "steps": [
-        "Start host onboarding wizard",
-        "Complete basic property information",
-        "Add property photos",
-        "Set amenities and rules",
-        "Configure pricing and calendar",
-        "Complete onboarding process"
-      ],
-      "expectedOutcome": "Host successfully completes onboarding and villa is listed",
-      "selectors": {
-        "wizardStep1": "[data-testid='onboarding-step-1']",
-        "propertyTitle": "[data-testid='property-title-input']",
-        "photoUpload": "[data-testid='property-photo-upload']",
-        "amenitiesSelection": "[data-testid='amenities-selection']",
-        "pricingInput": "[data-testid='pricing-input']",
-        "completeButton": "[data-testid='onboarding-complete']"
-      }
-    },
-    {
-      "id": "villa-calendar-management",
-      "name": "Villa Calendar Management Test",
-      "category": "host-management",
-      "priority": "high",
-      "description": "Test host villa calendar availability management",
-      "steps": [
-        "Login as host user",
-        "Navigate to villa management",
-        "Open calendar management",
-        "Block specific dates",
-        "Set seasonal pricing",
-        "Save calendar changes"
-      ],
-      "expectedOutcome": "Villa calendar updated with availability and pricing changes",
-      "selectors": {
-        "calendarView": "[data-testid='villa-calendar-view']",
-        "blockDatesButton": "[data-testid='block-dates-button']",
-        "pricingOverride": "[data-testid='pricing-override-input']",
-        "saveCalendar": "[data-testid='save-calendar-button']"
-      }
-    },
-    {
-      "id": "messaging-inbox",
-      "name": "Messaging Inbox Test",
-      "category": "messaging",
-      "priority": "medium",
-      "description": "Test messaging inbox functionality",
-      "steps": [
-        "Login as authenticated user",
-        "Navigate to messaging inbox",
-        "Verify message threads display",
-        "Open a message thread",
-        "Send a new message",
-        "Verify message sent successfully"
-      ],
-      "expectedOutcome": "Messaging system works with real-time updates",
-      "selectors": {
-        "messageInbox": "[data-testid='message-inbox']",
-        "messageThread": "[data-testid='message-thread']",
-        "messageInput": "[data-testid='message-input']",
-        "sendButton": "[data-testid='send-message-button']"
-      }
-    },
-    {
-      "id": "review-submission",
-      "name": "Review Submission Test",
-      "category": "reviews",
-      "priority": "medium",
-      "description": "Test guest review submission for completed stays",
-      "steps": [
-        "Login as guest with completed booking",
-        "Navigate to review submission page",
-        "Rate the villa experience",
-        "Write detailed review",
-        "Submit review",
-        "Verify review appears on villa page"
-      ],
-      "expectedOutcome": "Review submitted successfully and displays on villa page",
-      "selectors": {
-        "ratingStars": "[data-testid='review-rating-stars']",
-        "reviewText": "[data-testid='review-text-input']",
-        "submitReview": "[data-testid='submit-review-button']"
-      }
-    },
-    {
-      "id": "wishlist-management",
-      "name": "Wishlist Management Test",
-      "category": "wishlist",
-      "priority": "low",
-      "description": "Test adding and removing villas from wishlist",
-      "steps": [
-        "Login as guest user",
-        "Browse villa listings",
-        "Add villa to wishlist",
-        "Navigate to wishlist page",
-        "Verify villa appears in wishlist",
-        "Remove villa from wishlist"
-      ],
-      "expectedOutcome": "Wishlist functionality works correctly",
-      "selectors": {
-        "wishlistButton": "[data-testid='add-to-wishlist-button']",
-        "wishlistPage": "[data-testid='wishlist-page']",
-        "removeFromWishlist": "[data-testid='remove-from-wishlist']"
-      }
-    },
-    {
-      "id": "notifications-system",
-      "name": "Notifications System Test",
-      "category": "notifications",
-      "priority": "medium",
-      "description": "Test notification display and management",
-      "steps": [
-        "Login as authenticated user",
-        "Trigger notification event",
-        "Verify notification appears in notification bar",
-        "Click on notification",
-        "Mark notification as read",
-        "Verify unread count updates"
-      ],
-      "expectedOutcome": "Notification system works with real-time updates",
-      "selectors": {
-        "notificationBar": "[data-testid='notification-bar']",
-        "notificationItem": "[data-testid='notification-item']",
-        "markReadButton": "[data-testid='mark-read-button']",
-        "unreadCount": "[data-testid='unread-count']"
-      }
-    },
-    {
-      "id": "navigation-menu",
-      "name": "Navigation Menu Test",
+      "id": "navigation-test",
+      "name": "Navigation and Routing Test",
       "category": "navigation",
       "priority": "high",
-      "description": "Test main navigation menu functionality",
+      "description": "Test navigation menu and routing functionality",
       "steps": [
-        "Load application homepage",
-        "Verify navigation menu displays",
-        "Test all navigation links",
-        "Verify responsive menu on mobile",
-        "Test user menu dropdown"
+        "Click on BeachStay Villas logo to verify it returns to homepage",
+        "Test 'List Your Villa' button navigation",
+        "Click on user profile menu (login/signup when not authenticated)",
+        "Verify mobile menu functionality on smaller screens",
+        "Test search form submission and navigation to search results",
+        "Verify footer links are present and functional"
       ],
-      "expectedOutcome": "All navigation links work correctly across devices",
-      "selectors": {
-        "mainNav": "[data-testid='main-navigation']",
-        "navLinks": "[data-testid='nav-link']",
-        "mobileMenu": "[data-testid='mobile-menu-toggle']",
-        "userMenu": "[data-testid='user-menu-dropdown']"
-      }
+      "expectedOutcome": "All navigation elements work correctly and route to appropriate pages"
     },
     {
-      "id": "search-results-pagination",
-      "name": "Search Results Pagination Test",
-      "category": "search",
-      "priority": "medium",
-      "description": "Test pagination functionality in search results",
-      "steps": [
-        "Perform villa search with many results",
-        "Verify pagination controls display",
-        "Navigate to next page",
-        "Verify new results load",
-        "Test page number navigation",
-        "Verify results per page setting"
-      ],
-      "expectedOutcome": "Pagination works correctly with proper result loading",
-      "selectors": {
-        "paginationControls": "[data-testid='pagination-controls']",
-        "nextPageButton": "[data-testid='next-page-button']",
-        "pageNumbers": "[data-testid='page-number']",
-        "resultsPerPage": "[data-testid='results-per-page']"
-      }
-    },
-    {
-      "id": "villa-photo-gallery",
-      "name": "Villa Photo Gallery Test",
-      "category": "villa-details",
-      "priority": "medium",
-      "description": "Test villa photo gallery functionality",
-      "steps": [
-        "Navigate to villa details page",
-        "Open photo gallery",
-        "Navigate through photos",
-        "Test fullscreen view",
-        "Test thumbnail navigation",
-        "Close gallery"
-      ],
-      "expectedOutcome": "Photo gallery displays and navigates correctly",
-      "selectors": {
-        "photoGallery": "[data-testid='photo-gallery']",
-        "galleryThumbnails": "[data-testid='gallery-thumbnails']",
-        "fullscreenButton": "[data-testid='fullscreen-button']",
-        "nextPhotoButton": "[data-testid='next-photo-button']",
-        "closeGallery": "[data-testid='close-gallery-button']"
-      }
-    },
-    {
-      "id": "booking-cancellation",
-      "name": "Booking Cancellation Test",
-      "category": "booking",
+      "id": "villa-search-test",
+      "name": "Villa Search Functionality Test",
+      "category": "functionality",
       "priority": "high",
-      "description": "Test booking cancellation process",
+      "description": "Test the villa search and filtering system",
       "steps": [
-        "Login as guest with active booking",
-        "Navigate to my trips page",
-        "Select booking to cancel",
-        "Initiate cancellation process",
-        "Confirm cancellation",
-        "Verify booking status updated"
+        "Enter a location in the search bar (e.g., 'Santa Monica')",
+        "Select check-in and check-out dates",
+        "Set number of guests",
+        "Submit the search form",
+        "Verify navigation to search results page",
+        "Check that search parameters are preserved in URL",
+        "Verify villa cards display with proper information (price, location, amenities)"
       ],
-      "expectedOutcome": "Booking cancelled successfully with proper status update",
-      "selectors": {
-        "myTripsPage": "[data-testid='my-trips-page']",
-        "bookingItem": "[data-testid='booking-item']",
-        "cancelButton": "[data-testid='cancel-booking-button']",
-        "confirmCancellation": "[data-testid='confirm-cancellation']"
-      }
+      "expectedOutcome": "Search functionality works and displays relevant villa results with proper filtering"
     },
     {
-      "id": "host-reservation-management",
-      "name": "Host Reservation Management Test",
-      "category": "host-management",
+      "id": "authentication-flow-test",
+      "name": "User Authentication Flow Test",
+      "category": "authentication",
       "priority": "high",
-      "description": "Test host reservation approval and management",
+      "description": "Test user login, signup, and authentication states",
       "steps": [
-        "Login as host user",
-        "Navigate to reservations page",
-        "View pending reservation requests",
-        "Approve a reservation request",
-        "Verify guest receives confirmation",
-        "Update reservation status"
+        "Click on login/signup in navigation menu",
+        "Verify guest login form displays properly",
+        "Test form validation with empty fields",
+        "Verify guest signup form is accessible",
+        "Check host signup option is available",
+        "Test password reset functionality link",
+        "Verify authentication state changes in navigation after login attempt"
       ],
-      "expectedOutcome": "Host can successfully manage reservation requests",
-      "selectors": {
-        "reservationsPage": "[data-testid='host-reservations-page']",
-        "pendingRequests": "[data-testid='pending-requests']",
-        "approveButton": "[data-testid='approve-reservation-button']",
-        "reservationStatus": "[data-testid='reservation-status']"
-      }
+      "expectedOutcome": "Authentication forms display correctly with proper validation and navigation"
     },
     {
-      "id": "error-handling-404",
-      "name": "404 Error Page Test",
-      "category": "error-handling",
+      "id": "villa-details-test",
+      "name": "Villa Details Page Test",
+      "category": "functionality",
+      "priority": "high",
+      "description": "Test individual villa detail pages and booking flow",
+      "steps": [
+        "Click on a featured villa from homepage",
+        "Verify villa details page loads with complete information",
+        "Check villa photos, description, amenities, and pricing",
+        "Verify booking form or booking button is present",
+        "Test date picker functionality for booking",
+        "Check guest count selector",
+        "Verify price calculation updates based on dates/guests"
+      ],
+      "expectedOutcome": "Villa details page displays comprehensive information and functional booking interface"
+    },
+    {
+      "id": "responsive-design-test",
+      "name": "Responsive Design Test",
+      "category": "interface",
+      "priority": "medium",
+      "description": "Test application responsiveness across different screen sizes",
+      "steps": [
+        "Test homepage on desktop viewport (1200px+)",
+        "Resize to tablet viewport (768px-1199px)",
+        "Test mobile viewport (320px-767px)",
+        "Verify navigation collapses to hamburger menu on mobile",
+        "Check search form adapts to smaller screens",
+        "Verify villa cards stack properly on mobile",
+        "Test touch interactions on mobile devices"
+      ],
+      "expectedOutcome": "Application displays properly and remains functional across all screen sizes"
+    },
+    {
+      "id": "data-loading-test",
+      "name": "Data Loading and Error Handling Test",
+      "category": "functionality",
+      "priority": "medium",
+      "description": "Test data fetching, loading states, and error handling",
+      "steps": [
+        "Observe loading states when featured villas are fetching",
+        "Check loading states for popular destinations",
+        "Test error handling when API requests fail",
+        "Verify retry functionality on failed requests",
+        "Check empty state handling when no data is available",
+        "Test network connectivity issues handling"
+      ],
+      "expectedOutcome": "Application handles loading states gracefully and provides appropriate error messages"
+    },
+    {
+      "id": "host-features-test",
+      "name": "Host Features and Dashboard Test",
+      "category": "functionality",
+      "priority": "medium",
+      "description": "Test host-specific features and onboarding",
+      "steps": [
+        "Click 'List Your Villa' button",
+        "Verify host onboarding or signup process",
+        "Test host dashboard accessibility (may require authentication)",
+        "Check villa management features",
+        "Verify host profile editing capabilities",
+        "Test reservation management interface"
+      ],
+      "expectedOutcome": "Host features are accessible and functional for property management"
+    },
+    {
+      "id": "messaging-system-test",
+      "name": "Messaging System Test",
+      "category": "functionality",
+      "priority": "medium",
+      "description": "Test messaging functionality between users",
+      "steps": [
+        "Access messaging inbox (may require authentication)",
+        "Verify message thread display",
+        "Test message composition interface",
+        "Check real-time message updates",
+        "Verify unread message indicators",
+        "Test message thread navigation"
+      ],
+      "expectedOutcome": "Messaging system allows communication between guests and hosts"
+    },
+    {
+      "id": "wishlist-functionality-test",
+      "name": "Wishlist Functionality Test",
+      "category": "functionality",
       "priority": "low",
-      "description": "Test 404 error page display and navigation",
+      "description": "Test wishlist creation and management",
       "steps": [
-        "Navigate to non-existent URL",
-        "Verify 404 page displays",
-        "Test return to homepage link",
-        "Verify navigation still works",
-        "Test search functionality from 404 page"
+        "Access wishlist feature (may require authentication)",
+        "Test adding villas to wishlist",
+        "Verify wishlist display and organization",
+        "Test removing items from wishlist",
+        "Check wishlist sharing capabilities",
+        "Verify wishlist persistence across sessions"
       ],
-      "expectedOutcome": "404 page displays correctly with working navigation",
-      "selectors": {
-        "errorPage": "[data-testid='404-error-page']",
-        "homeLink": "[data-testid='return-home-link']",
-        "errorPageSearch": "[data-testid='error-page-search']"
-      }
+      "expectedOutcome": "Users can create and manage wishlists of favorite villas"
     },
     {
-      "id": "responsive-design-mobile",
-      "name": "Mobile Responsive Design Test",
-      "category": "responsive",
+      "id": "booking-flow-test",
+      "name": "Complete Booking Flow Test",
+      "category": "functionality",
       "priority": "high",
-      "description": "Test application responsiveness on mobile devices",
+      "description": "Test end-to-end booking process",
       "steps": [
-        "Load application on mobile viewport",
-        "Test navigation menu collapse",
-        "Verify search form adapts to mobile",
-        "Test villa cards display properly",
-        "Verify booking flow works on mobile"
+        "Select a villa and initiate booking",
+        "Fill out guest information form",
+        "Review booking details and pricing",
+        "Proceed through payment simulation",
+        "Verify booking confirmation page",
+        "Check booking appears in user's trip history",
+        "Test booking cancellation if available"
       ],
-      "expectedOutcome": "Application displays and functions correctly on mobile devices",
-      "selectors": {
-        "mobileNavToggle": "[data-testid='mobile-nav-toggle']",
-        "mobileSearchForm": "[data-testid='mobile-search-form']",
-        "mobileVillaCard": "[data-testid='mobile-villa-card']"
-      }
+      "expectedOutcome": "Complete booking process works from villa selection to confirmation"
     },
     {
-      "id": "form-validation-comprehensive",
-      "name": "Comprehensive Form Validation Test",
-      "category": "forms",
+      "id": "search-filters-test",
+      "name": "Advanced Search Filters Test",
+      "category": "functionality",
       "priority": "medium",
-      "description": "Test form validation across all major forms",
+      "description": "Test advanced search filtering options",
       "steps": [
-        "Test signup form validation",
-        "Test login form validation",
-        "Test booking form validation",
-        "Test profile edit form validation",
-        "Verify error messages display correctly"
+        "Access search results page",
+        "Test price range filters",
+        "Filter by number of bedrooms/bathrooms",
+        "Test amenity filters (pool, beach access, etc.)",
+        "Filter by property type or features",
+        "Test sorting options (price, rating, distance)",
+        "Verify filter combinations work correctly"
       ],
-      "expectedOutcome": "All forms validate input correctly with clear error messages",
-      "selectors": {
-        "formErrorMessage": "[data-testid='form-error-message']",
-        "requiredFieldError": "[data-testid='required-field-error']",
-        "emailValidationError": "[data-testid='email-validation-error']"
-      }
+      "expectedOutcome": "Advanced filters help users narrow down villa search results effectively"
     },
     {
-      "id": "performance-load-test",
-      "name": "Performance Load Test",
-      "category": "performance",
+      "id": "review-system-test",
+      "name": "Review and Rating System Test",
+      "category": "functionality",
       "priority": "medium",
-      "description": "Test application performance under load",
+      "description": "Test review submission and display functionality",
       "steps": [
-        "Load homepage and measure load time",
-        "Perform search with large result set",
-        "Navigate through multiple villa pages",
-        "Test image loading performance",
-        "Verify no memory leaks in long sessions"
+        "View villa reviews and ratings",
+        "Test review submission form (may require completed booking)",
+        "Verify review editing capabilities",
+        "Check review moderation and display",
+        "Test rating calculation and display",
+        "Verify review helpfulness voting"
       ],
-      "expectedOutcome": "Application performs well under normal load conditions",
-      "selectors": {
-        "loadingIndicator": "[data-testid='loading-indicator']",
-        "performanceMetrics": "[data-testid='performance-metrics']"
-      }
+      "expectedOutcome": "Review system allows users to share and view experiences with villas"
+    },
+    {
+      "id": "accessibility-test",
+      "name": "Accessibility and Usability Test",
+      "category": "accessibility",
+      "priority": "medium",
+      "description": "Test application accessibility features",
+      "steps": [
+        "Test keyboard navigation throughout the application",
+        "Verify screen reader compatibility with ARIA labels",
+        "Check color contrast ratios for text readability",
+        "Test focus indicators on interactive elements",
+        "Verify form labels and error messages are accessible",
+        "Test with browser zoom up to 200%"
+      ],
+      "expectedOutcome": "Application is accessible to users with disabilities and follows WCAG guidelines"
     }
   ]
 }
