@@ -6,25 +6,30 @@
     "Node.js",
     "Express",
     "PostgreSQL",
+    "PGLite",
     "Tailwind CSS",
     "Zustand",
-    "React Router",
     "React Query",
+    "React Router",
     "Socket.io",
     "Zod",
-    "JWT",
-    "bcryptjs"
+    "Axios",
+    "Radix UI",
+    "Headless UI",
+    "React Icons",
+    "Date-fns",
+    "Framer Motion"
   ],
   "features": [
     {
       "name": "User Authentication",
-      "description": "Complete authentication system with login, signup, password reset, and session management",
+      "description": "Complete authentication system with login, signup, password reset for both guests and hosts",
       "files": [
         "src/components/views/UV_GuestLogin.tsx",
         "src/components/views/UV_GuestSignup.tsx",
+        "src/components/views/UV_HostSignup.tsx",
         "src/components/views/UV_PasswordReset.tsx",
-        "src/stores/userSession.ts",
-        "src/store/main.tsx"
+        "src/stores/userSession.ts"
       ]
     },
     {
@@ -33,73 +38,74 @@
       "files": [
         "src/components/views/UV_Homepage.tsx",
         "src/components/views/UV_SearchResults.tsx",
-        "src/components/views/UV_VillaDetails.tsx",
         "src/components/views/GV_TopNav.tsx"
       ]
     },
     {
-      "name": "Villa Management (Host)",
-      "description": "Host dashboard, villa creation, editing, and management features",
+      "name": "Villa Details and Booking",
+      "description": "Detailed villa pages with photos, amenities, reviews, and booking functionality",
       "files": [
-        "src/components/views/UV_HostDashboard.tsx",
-        "src/components/views/UV_HostOnboardingWizard.tsx",
-        "src/components/views/UV_HostVillaDetail.tsx",
-        "src/components/views/UV_HostProfileEdit.tsx"
-      ]
-    },
-    {
-      "name": "Booking System",
-      "description": "Complete booking flow from search to confirmation with payment processing",
-      "files": [
+        "src/components/views/UV_VillaDetails.tsx",
         "src/components/views/UV_BookingStart.tsx",
         "src/components/views/UV_BookingConfirmation.tsx",
-        "src/components/views/UV_BookingFailure.tsx",
-        "src/components/views/UV_ReservationDetail.tsx"
+        "src/components/views/UV_BookingFailure.tsx"
       ]
     },
     {
       "name": "Guest Dashboard",
-      "description": "Guest profile management, trip history, and account settings",
+      "description": "Guest user dashboard with trip management, profile editing, and wishlists",
       "files": [
         "src/components/views/UV_GuestDashboard.tsx",
-        "src/components/views/UV_GuestProfileEdit.tsx",
-        "src/components/views/UV_MyTrips.tsx"
+        "src/components/views/UV_MyTrips.tsx",
+        "src/components/views/UV_Wishlists.tsx",
+        "src/components/views/UV_GuestProfileEdit.tsx"
+      ]
+    },
+    {
+      "name": "Host Management",
+      "description": "Host dashboard, villa management, onboarding wizard, and reservation management",
+      "files": [
+        "src/components/views/UV_HostDashboard.tsx",
+        "src/components/views/UV_HostOnboardingWizard.tsx",
+        "src/components/views/UV_HostVillaDetail.tsx",
+        "src/components/views/UV_HostReservations.tsx",
+        "src/components/views/UV_HostProfileEdit.tsx"
       ]
     },
     {
       "name": "Messaging System",
-      "description": "Real-time messaging between hosts and guests with thread management",
+      "description": "Real-time messaging between guests and hosts with thread management",
       "files": [
         "src/components/views/UV_MessagingInbox.tsx",
         "src/components/views/UV_MessagingThread.tsx"
       ]
     },
     {
-      "name": "Wishlist Management",
-      "description": "Save and organize favorite villas in custom wishlists",
-      "files": ["src/components/views/UV_Wishlists.tsx"]
-    },
-    {
       "name": "Review System",
-      "description": "Guest and host review system with rating capabilities",
+      "description": "Guest and host review system with rating and feedback capabilities",
       "files": [
         "src/components/views/UV_LeaveReview.tsx",
         "src/components/views/UV_ReviewEdit.tsx"
       ]
     },
     {
-      "name": "Host Reservations",
-      "description": "Host view of all reservations and booking management",
-      "files": ["src/components/views/UV_HostReservations.tsx"]
+      "name": "Reservation Management",
+      "description": "Complete booking lifecycle management with payment tracking",
+      "files": ["src/components/views/UV_ReservationDetail.tsx"]
     },
     {
-      "name": "Navigation and Layout",
-      "description": "Responsive navigation, footer, and notification components",
+      "name": "Global Navigation",
+      "description": "Responsive navigation with search, user menus, and notifications",
       "files": [
         "src/components/views/GV_TopNav.tsx",
         "src/components/views/GV_Footer.tsx",
         "src/components/views/GV_NotificationBar.tsx"
       ]
+    },
+    {
+      "name": "State Management",
+      "description": "Centralized state management with persistence and real-time updates",
+      "files": ["src/store/main.tsx", "src/stores/userSession.ts"]
     }
   ],
   "database_tables": [
@@ -126,22 +132,30 @@
     "password_resets"
   ],
   "api_endpoints": [
-    "/auth/signup",
-    "/auth/login",
-    "/auth/logout",
-    "/auth/password-reset",
-    "/users/profile",
+    "/health",
     "/villas/featured",
     "/villas/popular-locations",
     "/villas/search",
     "/villas/:id",
+    "/villas/:id/photos",
+    "/villas/:id/amenities",
+    "/villas/:id/rules",
+    "/villas/:id/calendar",
+    "/villas/:id/pricing-overrides",
+    "/villas/:id/reviews",
+    "/auth/login",
+    "/auth/signup",
+    "/auth/logout",
+    "/auth/password-reset",
+    "/users/profile",
     "/bookings",
     "/bookings/:id",
+    "/bookings/preview",
+    "/messaging/threads",
+    "/messaging/threads/:id/messages",
     "/wishlists",
-    "/messages/threads",
-    "/messages/:threadId",
-    "/reviews",
-    "/host/dashboard",
-    "/host/reservations"
+    "/wishlists/:id/items",
+    "/notifications",
+    "/amenities"
   ]
 }
