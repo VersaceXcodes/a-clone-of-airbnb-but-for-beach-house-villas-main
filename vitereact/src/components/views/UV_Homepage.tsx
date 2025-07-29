@@ -26,23 +26,45 @@ type VillaSummary = z.infer<typeof villaSummarySchema>;
 // --- Data fetch functions ---
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+console.log("API_BASE configured as:", API_BASE);
+
+// Configure axios defaults for better CORS handling
+axios.defaults.withCredentials = false;
+axios.defaults.headers.common["Accept"] = "application/json";
 
 const fetchFeaturedVillas = async (): Promise<VillaSummary[]> => {
-	const { data } = await axios.get(`${API_BASE}/villas/featured`); // Map ids to string, and main_photo_url fallback as described
-	return Array.isArray(data)
-		? data.map((v: any) => ({
-				...v,
-				villa_id: String(v.villa_id),
-				main_photo_url:
-					v.main_photo_url ||
-					`https://picsum.photos/seed/villa_${v.villa_id}/600/400`,
-			}))
-		: [];
+	try {
+		console.log("Fetching featured villas from:", `${API_BASE}/villas/featured`);
+		const { data } = await axios.get(`${API_BASE}/villas/featured`);
+		console.log("Featured villas response:", data);
+		return Array.isArray(data)
+			? data.map((v: any) => ({
+					...v,
+					villa_id: String(v.villa_id),
+					main_photo_url:
+						v.main_photo_url ||
+						`https://picsum.photos/seed/villa_${v.villa_id}/600/400`,
+				}))
+			: [];
+	} catch (error) {
+		console.error("Error fetching featured villas:", error);
+		throw error;
+	}
 };
 
 const fetchPopularDestinations = async (): Promise<string[]> => {
-	const { data } = await axios.get(`${API_BASE}/villas/popular-locations`);
-	return Array.isArray(data) ? data : [];
+	try {
+		console.log(
+			"Fetching popular destinations from:",
+			`${API_BASE}/villas/popular-locations`,
+		);
+		const { data } = await axios.get(`${API_BASE}/villas/popular-locations`);
+		console.log("Popular destinations response:", data);
+		return Array.isArray(data) ? data : [];
+	} catch (error) {
+		console.error("Error fetching popular destinations:", error);
+		throw error;
+	}
 };
 
 // --- The View ---

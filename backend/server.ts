@@ -103,18 +103,27 @@ const pool = new Pool(
 const app = express();
 app.use(
   cors({
-    origin: [
-      "https://123testing-project-yes.launchpulse.ai",
-      "http://localhost:5173",
-      "http://localhost:3000",
-    ],
-    credentials: true,
+    origin: true, // Allow all origins for debugging
+    credentials: false, // Disable credentials for now
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept",
+      "Origin",
+    ],
+    optionsSuccessStatus: 200,
   }),
 );
 app.use(express.json({ limit: "2mb" }));
 app.use(morgan("dev"));
+
+// Debug middleware to log all requests
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path} - Origin: ${req.headers.origin}`);
+  next();
+});
 
 // Create API router
 const apiRouter = express.Router();
