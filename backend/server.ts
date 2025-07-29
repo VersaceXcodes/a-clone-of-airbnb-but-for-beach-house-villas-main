@@ -99,6 +99,30 @@ const pool = new Pool(
       },
 );
 
+// --- Express Setup ---
+const app = express();
+app.use(
+  cors({
+    origin: [
+      "https://123testing-project-yes.launchpulse.ai",
+      "http://localhost:5173",
+      "http://localhost:3000",
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  }),
+);
+app.use(express.json({ limit: "2mb" }));
+app.use(morgan("dev"));
+
+// Create API router
+const apiRouter = express.Router();
+
+// --- HTTP + Socket server setup ---
+const server = http.createServer(app);
+const io = new SocketIOServer(server, { cors: { origin: "*" } });
+
 // --- Helpers ---
 
 /**
@@ -178,15 +202,7 @@ function socketAuth(socket, next) {
   }
 }
 
-// --- Express Setup ---
-const app = express();
-app.use(cors());
-app.use(express.json({ limit: "2mb" }));
-app.use(morgan("dev"));
-
-// --- HTTP + Socket server setup ---
-const server = http.createServer(app);
-const io = new SocketIOServer(server, { cors: { origin: "*" } });
+// Socket.io setup
 io.use(socketAuth);
 
 const socketsByUserId = {};
@@ -206,6 +222,23 @@ io.on("connection", (socket) => {
     socketsByUserId[user_id] = (socketsByUserId[user_id] || []).filter(
       (s) => s.id !== socket.id,
     );
+  });
+});
+
+// --- API ROUTES Start ---
+
+// =============================
+//  Health Check Route
+// =============================
+
+/**
+ * Health Check Endpoint
+ */
+apiRouter.get("/health", (req, res) => {
+  res.json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    service: "BeachStay Villas API",
   });
 });
 
@@ -233,13 +266,21 @@ async function emitToThreadParticipants(thread_id, event, payload) {
 // --- API ROUTES Start ---
 
 // =============================
+//  Health Check Route
+// =============================
+
+/**
+ * Health Check Endpoint
+ */
+
+// =============================
 //  Auth Routes
 // =============================
 
 /**
  * User Signup
  */
-app.post(
+apiRouter.post(
   "/auth/signup",
   asyncWrap(async (req, res) => {
     /*
@@ -317,7 +358,7 @@ app.post(
 /**
  * User Login
  */
-app.post(
+apiRouter.post(
   "/auth/login",
   asyncWrap(async (req, res) => {
     /*
@@ -363,7 +404,7 @@ app.post(
 /**
  * Password Reset Request (Simulated email)
  */
-app.post(
+apiRouter.post(
   "/auth/password/request-reset",
   asyncWrap(async (req, res) => {
     /*
@@ -408,7 +449,7 @@ app.post(
 /**
  * Password Reset Submit
  */
-app.post(
+apiRouter.post(
   "/auth/password/reset",
   asyncWrap(async (req, res) => {
     /*
@@ -457,7 +498,7 @@ app.post(
 /**
  * Get current user profile
  */
-app.get(
+apiRouter.get(
   "/account/me",
   requireAuth,
   asyncWrap(async (req, res) => {
@@ -482,7 +523,7 @@ app.get(
 /**
  * Update current user profile (fields: display_name, profile_photo_url, bio, contact_email)
  */
-app.patch(
+apiRouter.patch(
   "/account/me",
   requireAuth,
   asyncWrap(async (req, res) => {
@@ -628,7 +669,7 @@ function buildVillaSearchSQL(q) {
 /**
  * Villas [GET] - search or homepage
  */
-app.get(
+apiRouter.get(
   "/villas",
   asyncWrap(async (req, res) => {
     /*
@@ -668,7 +709,7 @@ app.get(
 /**
  * Villas [GET] - Featured carousel
  */
-app.get(
+apiRouter.get(
   "/villas/featured",
   asyncWrap(async (req, res) => {
     /*
@@ -707,7 +748,7 @@ app.get(
 /**
  * Villas [GET] - Popular destinations
  */
-app.get(
+apiRouter.get(
   "/villas/popular-locations",
   asyncWrap(async (req, res) => {
     /*
@@ -732,7 +773,7 @@ app.get(
 /**
  * Villa Details [GET]
  */
-app.get(
+apiRouter.get(
   "/villas/:villa_id",
   asyncWrap(async (req, res) => {
     /*
@@ -778,7 +819,7 @@ app.get(
 /**
  * Villa Details [PATCH]
  */
-app.patch(
+apiRouter.patch(
   "/villas/:villa_id",
   requireAuth,
   asyncWrap(async (req, res) => {
@@ -833,7 +874,7 @@ app.patch(
 /**
  * Villa Photos [GET]
  */
-app.get(
+apiRouter.get(
   "/villas/:villa_id/photos",
   asyncWrap(async (req, res) => {
     /*
@@ -865,7 +906,7 @@ app.get(
 /**
  * Villa Amenities [GET]
  */
-app.get(
+apiRouter.get(
   "/villas/:villa_id/amenities",
   asyncWrap(async (req, res) => {
     /*
@@ -892,7 +933,7 @@ app.get(
 /**
  * Villa Rules [GET]
  */
-app.get(
+apiRouter.get(
   "/villas/:villa_id/rules",
   asyncWrap(async (req, res) => {
     /*
@@ -922,7 +963,7 @@ app.get(
 /**
  * Villa Calendar [GET]
  */
-app.get(
+apiRouter.get(
   "/villas/:villa_id/calendar",
   asyncWrap(async (req, res) => {
     /*
@@ -946,7 +987,7 @@ app.get(
 /**
  * Villa Calendar [PATCH]
  */
-app.patch(
+apiRouter.patch(
   "/villa/:villa_id/calendar",
   requireAuth,
   asyncWrap(async (req, res) => {
@@ -1007,7 +1048,7 @@ app.patch(
 /**
  * Villa Pricing Overrides [GET]
  */
-app.get(
+apiRouter.get(
   "/villas/:villa_id/pricing-overrides",
   asyncWrap(async (req, res) => {
     const villa_id = req.params.villa_id;
@@ -1028,7 +1069,7 @@ app.get(
 /**
  * Villa Pricing Overrides [PATCH]
  */
-app.patch(
+apiRouter.patch(
   "/villa/:villa_id/pricing-overrides",
   requireAuth,
   asyncWrap(async (req, res) => {
@@ -1082,7 +1123,7 @@ app.patch(
 /**
  * Master Amenity List [GET]
  */
-app.get(
+apiRouter.get(
   "/villas/amenities",
   asyncWrap(async (_req, res) => {
     /*
@@ -1109,7 +1150,7 @@ app.get(
 /**
  * Host Villas [GET]
  */
-app.get(
+apiRouter.get(
   "/host/villas",
   requireAuth,
   asyncWrap(async (req, res) => {
@@ -1148,7 +1189,7 @@ app.get(
 /**
  * Host Villas [POST] - Create new villa
  */
-app.post(
+apiRouter.post(
   "/host/villas",
   requireAuth,
   asyncWrap(async (req, res) => {
@@ -1317,7 +1358,7 @@ async function computeBookingPrice(villa_id, checkin_str, checkout_str) {
 /**
  * Booking Preview [POST]
  */
-app.post(
+apiRouter.post(
   "/villas/:villa_id/booking/preview",
   asyncWrap(async (req, res) => {
     /*
@@ -1350,7 +1391,7 @@ app.post(
 /**
  * Create Booking [POST]
  */
-app.post(
+apiRouter.post(
   "/villas/:villa_id/booking",
   requireAuth,
   asyncWrap(async (req, res) => {
@@ -1482,7 +1523,7 @@ app.post(
 /**
  * Notifications [GET] - List user notifications
  */
-app.get(
+apiRouter.get(
   "/account/notifications",
   requireAuth,
   asyncWrap(async (req, res) => {
@@ -1523,7 +1564,7 @@ app.get(
 /**
  * Notifications Unread Count [GET]
  */
-app.get(
+apiRouter.get(
   "/account/notifications/unread_count",
   requireAuth,
   asyncWrap(async (req, res) => {
@@ -1543,7 +1584,7 @@ app.get(
 /**
  * Mark Notification as Read [POST]
  */
-app.post(
+apiRouter.post(
   "/account/notifications/:notification_id/read",
   requireAuth,
   asyncWrap(async (req, res) => {
@@ -1578,7 +1619,7 @@ app.post(
 );
 
 // GET /villas/:villa_id/reviews - Get villa reviews with pagination
-app.get(
+apiRouter.get(
   "/villas/:villa_id/reviews",
   asyncWrap(async (req, res) => {
     const { villa_id } = req.params;
@@ -1628,6 +1669,9 @@ app.get(
 // ... More route implementations below to cover the full OpenAPI spec (Bookings, Wishlists, Messaging, Reviews, etc.)
 // Due to length, only authentication, villas, and booking creation flows are included in this block.
 // The full implementation contains similar sections for each OpenAPI endpoint: validation, permission, db r/w, response shaping, event emission.
+
+// Mount API router
+app.use("/api", apiRouter);
 
 //---------------- SPA Static, Export, Startup BOILERPLATE ------------------//
 // Only set up static file serving when not in test mode
