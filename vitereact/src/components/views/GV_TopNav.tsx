@@ -27,6 +27,15 @@ const GV_TopNav: React.FC = () => {
 		(s) => s.user_session.unread_message_count,
 	);
 	const user_id = useAppStore((s) => s.user_session.user_id);
+
+	// Debug logging
+	useEffect(() => {
+		console.log("TopNav: Auth state changed", {
+			is_authenticated,
+			is_host,
+			display_name,
+		});
+	}, [is_authenticated, is_host, display_name]);
 	const search_state = useAppStore((s) => s.search_state);
 	const set_search_state = useAppStore((s) => s.set_search_state);
 	const reset_search_state = useAppStore((s) => s.reset_search_state);
@@ -178,13 +187,17 @@ const GV_TopNav: React.FC = () => {
 					{is_host ? (
 						<>
 							<Link
-								to="/host/dashboard"
-								className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium"
-								role="menuitem"
-								tabIndex={0}
-								onClick={() => setProfileDropdownOpen(false)}
+								to={
+									is_authenticated
+										? is_host
+											? "/host/onboarding"
+											: "/host/signup"
+										: "/guest/login?returnTo=" + encodeURIComponent("/host/onboarding")
+								}
+								className="py-2 text-lg font-medium text-blue-600 hover:underline"
+								onClick={() => setMobileMenuOpen(false)}
 							>
-								Host Dashboard
+								List Your Villa
 							</Link>
 							<Link
 								to="/host/profile/edit"
@@ -377,12 +390,12 @@ const GV_TopNav: React.FC = () => {
 									? is_host
 										? "/host/onboarding"
 										: "/host/signup"
-									: "/guest/login?returnTo=/host/onboarding"
+									: "/guest/login?returnTo=" + encodeURIComponent("/host/onboarding")
 							}
 							className="hidden md:inline-flex px-4 py-2 bg-sky-600 text-white font-semibold rounded-full hover:bg-sky-700 transition whitespace-nowrap"
 						>
 							List Your Villa
-						</Link>
+						</Link>{" "}
 						{is_authenticated && (
 							<Link
 								to="/messaging"
@@ -397,7 +410,6 @@ const GV_TopNav: React.FC = () => {
 								)}
 							</Link>
 						)}
-
 						<div className="relative ml-2">
 							<button
 								ref={profileButtonRef}

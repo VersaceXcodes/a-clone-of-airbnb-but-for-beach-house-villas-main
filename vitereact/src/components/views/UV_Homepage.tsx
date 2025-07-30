@@ -191,7 +191,7 @@ const UV_Homepage: React.FC = () => {
 		? user_session.is_host
 			? "/host/onboarding"
 			: "/host/signup"
-		: "/guest/login?returnTo=/host/onboarding";
+		: "/guest/login?returnTo=" + encodeURIComponent("/host/onboarding");
 
 	// --- Error boundaries for villa/destinations sections ---
 	// (react-error-boundary pattern inline for simplicity)

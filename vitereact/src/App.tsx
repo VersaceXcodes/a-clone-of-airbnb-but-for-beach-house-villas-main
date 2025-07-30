@@ -1,4 +1,4 @@
-import React, { useRef, Suspense, lazy } from "react";
+import React, { useRef, Suspense, lazy, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "styled-components"; // Example placeholder, choose your actual theming lib
@@ -52,12 +52,44 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 	const user_session = useAppStore((state) => state.user_session);
-	// (OPTIONAL: you might want stricter checks, such as user role, host, etc)
-	if (!user_session.is_authenticated)
-		return <Navigate to="/guest/login" replace />;
+	const [hasHydrated, setHasHydrated] = useState(false);
+
+	// Check if store has been hydrated from localStorage
+	useEffect(() => {
+		// Simple hydration check - wait for next tick to allow store to hydrate
+		const timer = setTimeout(() => {
+			setHasHydrated(true);
+		}, 50);
+
+		return () => clearTimeout(timer);
+	}, []);
+
+	// Show loading while store is hydrating
+	if (!hasHydrated) {
+		return (
+			<div className="flex justify-center items-center h-64 text-gray-500">
+				Loading...
+			</div>
+		);
+	}
+
+	// Check authentication after hydration
+	if (!user_session.is_authenticated) {
+		console.log(
+			"ProtectedRoute: User not authenticated, redirecting to login",
+			user_session,
+		);
+		const currentPath = window.location.pathname;
+		const returnTo = encodeURIComponent(currentPath);
+		return <Navigate to={`/guest/login?returnTo=${returnTo}`} replace />;
+	}
+
+	console.log(
+		"ProtectedRoute: User authenticated, allowing access",
+		user_session,
+	);
 	return <>{children}</>;
 };
-
 /* --- Shared / App-wide components --- */
 import GV_TopNav from "@/components/views/GV_TopNav.tsx";
 import GV_Footer from "@/components/views/GV_Footer.tsx";

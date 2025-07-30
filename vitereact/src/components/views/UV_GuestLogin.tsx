@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
@@ -33,10 +33,29 @@ const ErrorFallback: React.FC<{ error: any }> = ({ error }) => (
 const UV_GuestLogin: React.FC = () => {
 	// Zustand: Use set_user_session correctly per selector rule
 	const set_user_session = useAppStore((state) => state.set_user_session);
+	const user_session = useAppStore((state) => state.user_session);
 
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
 	const returnTo = searchParams.get("returnTo"); // Local state
+
+	// Debug logging
+	useEffect(() => {
+		console.log("GuestLogin: returnTo parameter:", returnTo);
+		console.log("GuestLogin: current user session:", user_session);
+
+		// If user is already authenticated, redirect them
+		if (user_session.is_authenticated) {
+			console.log("GuestLogin: User already authenticated, redirecting");
+			if (returnTo) {
+				navigate(returnTo, { replace: true });
+			} else if (user_session.is_host) {
+				navigate("/host/dashboard", { replace: true });
+			} else {
+				navigate("/guest/dashboard", { replace: true });
+			}
+		}
+	}, [returnTo, user_session, navigate]);
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const [error_message, setErrorMessage] = useState<string | null>(null);
@@ -60,6 +79,7 @@ const UV_GuestLogin: React.FC = () => {
 			return res.data;
 		},
 		onSuccess: (data: LoginResponse) => {
+			console.log("Login successful, setting user session:", data);
 			set_user_session({
 				user_id: data.user_id,
 				is_authenticated: true,
@@ -71,19 +91,27 @@ const UV_GuestLogin: React.FC = () => {
 				unread_message_count: 0,
 				last_active_at: null,
 				email: email.trim(),
-			}); // Clear form fields after success
+			});
+
+			// Clear form fields after success
 			setEmail("");
 			setPassword("");
 			setIsSubmitting(false);
 
-			// Redirect to return URL if provided, otherwise to appropriate dashboard
-			if (returnTo) {
-				navigate(returnTo, { replace: true });
-			} else if (data.is_host) {
-				navigate("/host/dashboard", { replace: true });
-			} else {
-				navigate("/guest/dashboard", { replace: true });
-			}
+			// Small delay to ensure state is updated before navigation
+			setTimeout(() => {
+				// Redirect to return URL if provided, otherwise to appropriate dashboard
+				if (returnTo) {
+					console.log("Redirecting to returnTo:", returnTo);
+					navigate(returnTo, { replace: true });
+				} else if (data.is_host) {
+					console.log("Redirecting host to dashboard");
+					navigate("/host/dashboard", { replace: true });
+				} else {
+					console.log("Redirecting guest to dashboard");
+					navigate("/guest/dashboard", { replace: true });
+				}
+			}, 50);
 		},
 		onError: (error: any) => {
 			if (error?.response?.data && typeof error.response.data.error === "string") {
