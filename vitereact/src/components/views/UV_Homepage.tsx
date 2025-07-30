@@ -188,7 +188,9 @@ const UV_Homepage: React.FC = () => {
 
 	// --- Above-the-fold CTA (List Your Villa) behaviour ---
 	const listYourVillaHref = user_session.is_authenticated
-		? "/host/onboarding"
+		? user_session.is_host
+			? "/host/onboarding"
+			: "/host/signup"
 		: "/guest/login?returnTo=/host/onboarding";
 
 	// --- Error boundaries for villa/destinations sections ---

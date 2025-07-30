@@ -374,14 +374,15 @@ const GV_TopNav: React.FC = () => {
 						<Link
 							to={
 								is_authenticated
-									? "/host/onboarding"
+									? is_host
+										? "/host/onboarding"
+										: "/host/signup"
 									: "/guest/login?returnTo=/host/onboarding"
 							}
 							className="hidden md:inline-flex px-4 py-2 bg-sky-600 text-white font-semibold rounded-full hover:bg-sky-700 transition whitespace-nowrap"
 						>
 							List Your Villa
 						</Link>
-
 						{is_authenticated && (
 							<Link
 								to="/messaging"
@@ -528,7 +529,9 @@ const GV_TopNav: React.FC = () => {
 							<Link
 								to={
 									is_authenticated
-										? "/host/onboarding"
+										? is_host
+											? "/host/onboarding"
+											: "/host/signup"
 										: "/guest/login?returnTo=/host/onboarding"
 								}
 								className="py-2 text-lg font-medium text-blue-600 hover:underline"
