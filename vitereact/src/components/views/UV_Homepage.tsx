@@ -187,9 +187,9 @@ const UV_Homepage: React.FC = () => {
 	}, [location]); // only runs on first mount usually
 
 	// --- Above-the-fold CTA (List Your Villa) behaviour ---
-	const listYourVillaHref = user_session.is_host
+	const listYourVillaHref = user_session.is_authenticated
 		? "/host/onboarding"
-		: "/host/onboarding"; // same route for MVP
+		: "/guest/login?returnTo=/host/onboarding";
 
 	// --- Error boundaries for villa/destinations sections ---
 	// (react-error-boundary pattern inline for simplicity)

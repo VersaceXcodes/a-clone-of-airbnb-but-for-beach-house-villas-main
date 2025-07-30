@@ -6,50 +6,56 @@ import { HelmetProvider } from "react-helmet-async"; // For SEO, optional
 
 // Global error boundary
 interface ErrorBoundaryState {
-  hasError: boolean;
-  error: Error | null;
+	hasError: boolean;
+	error: Error | null;
 }
 
 interface ErrorBoundaryProps {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }
 
-class AppErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  state: ErrorBoundaryState = { hasError: false, error: null };
+class AppErrorBoundary extends React.Component<
+	ErrorBoundaryProps,
+	ErrorBoundaryState
+> {
+	state: ErrorBoundaryState = { hasError: false, error: null };
 
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error };
-  }
-  
-  componentDidCatch(error: Error, info: React.ErrorInfo) {
-    // log to service
-    // logErrorToService(error, info);
-  }
-  
-  render() {
-    if (this.state.hasError) {
-      return <div className="text-red-600 p-8 text-center">
-        <h1>Something went wrong 🙁</h1>
-        <pre>{this.state.error?.message}</pre>
-        {/* Could render <UV_ErrorState /> instead if desired */}
-      </div>;
-    }
-    return this.props.children;
-  }
+	static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+		return { hasError: true, error };
+	}
+
+	componentDidCatch(error: Error, info: React.ErrorInfo) {
+		// log to service
+		// logErrorToService(error, info);
+	}
+
+	render() {
+		if (this.state.hasError) {
+			return (
+				<div className="text-red-600 p-8 text-center">
+					<h1>Something went wrong 🙁</h1>
+					<pre>{this.state.error?.message}</pre>
+					{/* Could render <UV_ErrorState /> instead if desired */}
+				</div>
+			);
+		}
+		return this.props.children;
+	}
 }
 
 // --- Authentication Guard ---
-import useUserSession from "@/stores/userSession"; // Your zustand store selector
+import { useAppStore } from "@/store/main";
 
 interface ProtectedRouteProps {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { user } = useUserSession();
-  // (OPTIONAL: you might want stricter checks, such as user role, host, etc)
-  if (!user.is_authenticated) return <Navigate to="/guest/login" replace />;
-  return <>{children}</>;
+	const user_session = useAppStore((state) => state.user_session);
+	// (OPTIONAL: you might want stricter checks, such as user role, host, etc)
+	if (!user_session.is_authenticated)
+		return <Navigate to="/guest/login" replace />;
+	return <>{children}</>;
 };
 
 /* --- Shared / App-wide components --- */
@@ -91,153 +97,203 @@ import UV_ErrorState from "@/components/views/UV_ErrorState.tsx";
 const theme = {};
 
 const App: React.FC = () => {
-  // Zustand does NOT need a Provider if you use their standard setup
-  // If you use SSR or advanced context, you can wrap <ZustandProvider>.
-  // https://docs.pmnd.rs/zustand/integrations/context
+	// Zustand does NOT need a Provider if you use their standard setup
+	// If you use SSR or advanced context, you can wrap <ZustandProvider>.
+	// https://docs.pmnd.rs/zustand/integrations/context
 
-  // Instantiate only once
-  const queryClientRef = useRef<QueryClient>();
-  if (!queryClientRef.current) {
-    queryClientRef.current = new QueryClient();
-  }
+	// Instantiate only once
+	const queryClientRef = useRef<QueryClient>();
+	if (!queryClientRef.current) {
+		queryClientRef.current = new QueryClient();
+	}
 
-  return (
-    <React.StrictMode>
-      <HelmetProvider>
-        <ThemeProvider theme={theme}>
-          <AppErrorBoundary>
-            {/* NOTE: If you have global CSS reset, include here (Tailwind usually does this) */}
+	return (
+		<React.StrictMode>
+			<HelmetProvider>
+				<ThemeProvider theme={theme}>
+					<AppErrorBoundary>
+						{/* NOTE: If you have global CSS reset, include here (Tailwind usually does this) */}
 
-            <BrowserRouter>
-              <QueryClientProvider client={queryClientRef.current}>
-                <div className="flex flex-col min-h-screen bg-white">
-                  {/* Persistent Top Navigation */}
-                  <GV_TopNav />
-                  
-                  {/* Notification Bar - Should be properly portaled/fixed */}
-                  <GV_NotificationBar />
+						<BrowserRouter>
+							<QueryClientProvider client={queryClientRef.current}>
+								<div className="flex flex-col min-h-screen bg-white">
+									{/* Persistent Top Navigation */}
+									<GV_TopNav />
 
-                  {/* Main Content */}
-                  <div className="flex-1 w-full">
-                    {/* Suspense enables fallback UI if any child is lazy loaded */}
-                    <Suspense fallback={
-                      <div className="flex justify-center items-center h-64 text-gray-500">
-                        Loading...
-                      </div>
-                    }>
-                      <Routes>
-                        {/* Public & Discovery */}
-                        <Route path="/" element={<UV_Homepage />} />
-                        <Route path="/search" element={<UV_SearchResults />} />
-                        <Route path="/villa/:villaId" element={<UV_VillaDetails />} />
+									{/* Notification Bar - Should be properly portaled/fixed */}
+									<GV_NotificationBar />
 
-                        {/* Booking Flows */}
-                        <Route path="/booking/start" element={<UV_BookingStart />} />
-                        <Route path="/booking/confirmation" element={<UV_BookingConfirmation />} />
-                        <Route path="/booking/failure" element={<UV_BookingFailure />} />
+									{/* Main Content */}
+									<div className="flex-1 w-full">
+										{/* Suspense enables fallback UI if any child is lazy loaded */}
+										<Suspense
+											fallback={
+												<div className="flex justify-center items-center h-64 text-gray-500">
+													Loading...
+												</div>
+											}
+										>
+											<Routes>
+												{/* Public & Discovery */}
+												<Route path="/" element={<UV_Homepage />} />
+												<Route path="/search" element={<UV_SearchResults />} />
+												<Route path="/villa/:villaId" element={<UV_VillaDetails />} />
 
-                        {/* Guest Auth/Profile/Dashboard (protected as needed) */}
-                        <Route path="/guest/signup" element={<UV_GuestSignup />} />
-                        <Route path="/guest/login" element={<UV_GuestLogin />} />
-                        <Route path="/guest/password-reset" element={<UV_PasswordReset />} />
-                        <Route path="/guest/dashboard" element={
-                          <ProtectedRoute>
-                            <UV_GuestDashboard />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/guest/profile/edit" element={
-                          <ProtectedRoute>
-                            <UV_GuestProfileEdit />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/guest/my-trips" element={
-                          <ProtectedRoute>
-                            <UV_MyTrips />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/guest/wishlists" element={
-                          <ProtectedRoute>
-                            <UV_Wishlists />
-                          </ProtectedRoute>
-                        } />
+												{/* Booking Flows */}
+												<Route path="/booking/start" element={<UV_BookingStart />} />
+												<Route
+													path="/booking/confirmation"
+													element={<UV_BookingConfirmation />}
+												/>
+												<Route path="/booking/failure" element={<UV_BookingFailure />} />
 
-                        {/* Host Auth/Profile/Dashboard (protected) */}
-                        <Route path="/host/signup" element={<UV_HostSignup />} />
-                        <Route path="/host/dashboard" element={
-                          <ProtectedRoute>
-                            <UV_HostDashboard />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/host/profile/edit" element={
-                          <ProtectedRoute>
-                            <UV_HostProfileEdit />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/host/onboarding" element={
-                          <ProtectedRoute>
-                            <UV_HostOnboardingWizard />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/host/villa/:villaId" element={
-                          <ProtectedRoute>
-                            <UV_HostVillaDetail />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/host/reservations" element={
-                          <ProtectedRoute>
-                            <UV_HostReservations />
-                          </ProtectedRoute>
-                        } />
+												{/* Guest Auth/Profile/Dashboard (protected as needed) */}
+												<Route path="/guest/signup" element={<UV_GuestSignup />} />
+												<Route path="/guest/login" element={<UV_GuestLogin />} />
+												<Route
+													path="/guest/password-reset"
+													element={<UV_PasswordReset />}
+												/>
+												<Route
+													path="/guest/dashboard"
+													element={
+														<ProtectedRoute>
+															<UV_GuestDashboard />
+														</ProtectedRoute>
+													}
+												/>
+												<Route
+													path="/guest/profile/edit"
+													element={
+														<ProtectedRoute>
+															<UV_GuestProfileEdit />
+														</ProtectedRoute>
+													}
+												/>
+												<Route
+													path="/guest/my-trips"
+													element={
+														<ProtectedRoute>
+															<UV_MyTrips />
+														</ProtectedRoute>
+													}
+												/>
+												<Route
+													path="/guest/wishlists"
+													element={
+														<ProtectedRoute>
+															<UV_Wishlists />
+														</ProtectedRoute>
+													}
+												/>
 
-                        {/* Messaging (protected) */}
-                        <Route path="/messaging" element={
-                          <ProtectedRoute>
-                            <UV_MessagingInbox />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/messaging/thread/:threadId" element={
-                          <ProtectedRoute>
-                            <UV_MessagingThread />
-                          </ProtectedRoute>
-                        } />
+												{/* Host Auth/Profile/Dashboard (protected) */}
+												<Route path="/host/signup" element={<UV_HostSignup />} />
+												<Route
+													path="/host/dashboard"
+													element={
+														<ProtectedRoute>
+															<UV_HostDashboard />
+														</ProtectedRoute>
+													}
+												/>
+												<Route
+													path="/host/profile/edit"
+													element={
+														<ProtectedRoute>
+															<UV_HostProfileEdit />
+														</ProtectedRoute>
+													}
+												/>
+												<Route
+													path="/host/onboarding"
+													element={
+														<ProtectedRoute>
+															<UV_HostOnboardingWizard />
+														</ProtectedRoute>
+													}
+												/>
+												<Route
+													path="/host/villa/:villaId"
+													element={
+														<ProtectedRoute>
+															<UV_HostVillaDetail />
+														</ProtectedRoute>
+													}
+												/>
+												<Route
+													path="/host/reservations"
+													element={
+														<ProtectedRoute>
+															<UV_HostReservations />
+														</ProtectedRoute>
+													}
+												/>
 
-                        {/* Reservation & Review (protected) */}
-                        <Route path="/reservation/:reservationId" element={
-                          <ProtectedRoute>
-                            <UV_ReservationDetail />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/review/leave/:bookingId" element={
-                          <ProtectedRoute>
-                            <UV_LeaveReview />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/review/edit/:reviewId" element={
-                          <ProtectedRoute>
-                            <UV_ReviewEdit />
-                          </ProtectedRoute>
-                        } />
+												{/* Messaging (protected) */}
+												<Route
+													path="/messaging"
+													element={
+														<ProtectedRoute>
+															<UV_MessagingInbox />
+														</ProtectedRoute>
+													}
+												/>
+												<Route
+													path="/messaging/thread/:threadId"
+													element={
+														<ProtectedRoute>
+															<UV_MessagingThread />
+														</ProtectedRoute>
+													}
+												/>
 
-                        {/* Legal/Static (public) */}
-                        <Route path="/legal/:policy" element={<UV_LegalPolicy />} />
+												{/* Reservation & Review (protected) */}
+												<Route
+													path="/reservation/:reservationId"
+													element={
+														<ProtectedRoute>
+															<UV_ReservationDetail />
+														</ProtectedRoute>
+													}
+												/>
+												<Route
+													path="/review/leave/:bookingId"
+													element={
+														<ProtectedRoute>
+															<UV_LeaveReview />
+														</ProtectedRoute>
+													}
+												/>
+												<Route
+													path="/review/edit/:reviewId"
+													element={
+														<ProtectedRoute>
+															<UV_ReviewEdit />
+														</ProtectedRoute>
+													}
+												/>
 
-                        {/* Generic/Error/Fallback */}
-                        <Route path="/error" element={<UV_ErrorState />} />
-                        <Route path="/404" element={<UV_404NotFound />} />
-                        <Route path="*" element={<UV_404NotFound />} />
-                      </Routes>
-                    </Suspense>
-                  </div>
-                  {/* Persistent Footer */}
-                  <GV_Footer />
-                </div>
-              </QueryClientProvider>
-            </BrowserRouter>
-          </AppErrorBoundary>
-        </ThemeProvider>
-      </HelmetProvider>
-    </React.StrictMode>
-  );
+												{/* Legal/Static (public) */}
+												<Route path="/legal/:policy" element={<UV_LegalPolicy />} />
+
+												{/* Generic/Error/Fallback */}
+												<Route path="/error" element={<UV_ErrorState />} />
+												<Route path="/404" element={<UV_404NotFound />} />
+												<Route path="*" element={<UV_404NotFound />} />
+											</Routes>
+										</Suspense>
+									</div>
+									{/* Persistent Footer */}
+									<GV_Footer />
+								</div>
+							</QueryClientProvider>
+						</BrowserRouter>
+					</AppErrorBoundary>
+				</ThemeProvider>
+			</HelmetProvider>
+		</React.StrictMode>
+	);
 };
 
 export default App;
