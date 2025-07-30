@@ -25,8 +25,10 @@ type VillaSummary = z.infer<typeof villaSummarySchema>;
 
 // --- Data fetch functions ---
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
-console.log("API_BASE configured as:", API_BASE);
+const API_BASE =
+	import.meta.env.VITE_API_BASE_URL ||
+	"https://123testing-project-yes-api.launchpulse.ai/api";
+console.log("Homepage: API_BASE configured as:", API_BASE);
 
 // Configure axios defaults for better CORS handling
 axios.defaults.withCredentials = false;
