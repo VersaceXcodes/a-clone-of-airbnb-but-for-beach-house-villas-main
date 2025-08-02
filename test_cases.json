@@ -1,0 +1,272 @@
+{
+  "testCases": [
+    {
+      "id": "functional-app-test",
+      "name": "Functional Application Test",
+      "category": "functionality",
+      "priority": "critical",
+      "description": "Verify the application has actual functionality beyond basic placeholder",
+      "steps": [
+        "Navigate to application homepage",
+        "Verify multiple interactive elements exist (search form, buttons, navigation links)",
+        "Check for proper navigation structure with BeachStay Villas branding",
+        "Verify application shows real villa listings and featured content",
+        "Confirm search functionality is present and interactive"
+      ],
+      "expectedOutcome": "Application shows functional BeachStay Villas platform with villa search, listings, and interactive features",
+      "failureCondition": "If page only shows 'Vite + React' placeholder or generic content, this test should FAIL"
+    },
+    {
+      "id": "homepage-content-test",
+      "name": "Homepage Content and Features Test",
+      "category": "interface",
+      "priority": "high",
+      "description": "Test that homepage displays proper content and interactive elements",
+      "steps": [
+        "Load the homepage at root URL",
+        "Verify hero section with beach villa background image",
+        "Check search form with location, check-in, check-out, and guests fields",
+        "Verify 'Featured Villas' section displays villa cards",
+        "Check 'Popular Beach Destinations' section",
+        "Verify navigation bar with BeachStay Villas logo and menu items",
+        "Test search form submission functionality"
+      ],
+      "expectedOutcome": "Homepage displays complete BeachStay Villas interface with functional search and villa listings"
+    },
+    {
+      "id": "villa-search-functionality",
+      "name": "Villa Search and Results Test",
+      "category": "functionality",
+      "priority": "high",
+      "description": "Test villa search functionality and results display",
+      "steps": [
+        "Enter a location in the search form (e.g., 'Santa Monica')",
+        "Select check-in and check-out dates",
+        "Set number of guests",
+        "Submit search form",
+        "Verify navigation to search results page",
+        "Check that villa cards display with images, titles, prices, and details",
+        "Test filter functionality if available",
+        "Verify villa detail page navigation from search results"
+      ],
+      "expectedOutcome": "Search functionality works and displays relevant villa results with proper formatting and navigation"
+    },
+    {
+      "id": "user-authentication-flow",
+      "name": "User Authentication System Test",
+      "category": "authentication",
+      "priority": "critical",
+      "description": "Test complete user authentication flow including signup and login",
+      "steps": [
+        "Navigate to guest signup page",
+        "Fill out signup form with valid email, password, and display name",
+        "Submit signup form and verify success",
+        "Test login functionality with created credentials",
+        "Verify user session persistence and authenticated state",
+        "Check that protected routes are accessible after login",
+        "Test logout functionality",
+        "Verify redirect to login for protected routes when not authenticated"
+      ],
+      "expectedOutcome": "Complete authentication flow works with proper session management and route protection"
+    },
+    {
+      "id": "villa-detail-page-test",
+      "name": "Villa Detail Page Functionality",
+      "category": "interface",
+      "priority": "high",
+      "description": "Test villa detail page displays complete information and booking functionality",
+      "steps": [
+        "Navigate to a specific villa detail page",
+        "Verify villa images, title, description, and location display",
+        "Check amenities list and villa specifications (bedrooms, bathrooms, etc.)",
+        "Verify pricing information and availability calendar",
+        "Test booking form functionality",
+        "Check host information and reviews section",
+        "Verify map integration if present",
+        "Test wishlist add/remove functionality if logged in"
+      ],
+      "expectedOutcome": "Villa detail page shows comprehensive villa information with functional booking and interaction elements"
+    },
+    {
+      "id": "booking-process-test",
+      "name": "Villa Booking Process Test",
+      "category": "functionality",
+      "priority": "critical",
+      "description": "Test complete villa booking flow from selection to confirmation",
+      "steps": [
+        "Select a villa and navigate to booking page",
+        "Fill out booking form with dates and guest information",
+        "Verify pricing calculation and breakdown",
+        "Submit booking request",
+        "Check booking confirmation or pending status",
+        "Verify booking appears in user dashboard/trips",
+        "Test booking modification if available",
+        "Check email notifications or system notifications"
+      ],
+      "expectedOutcome": "Complete booking process works with proper validation, pricing, and confirmation"
+    },
+    {
+      "id": "host-dashboard-functionality",
+      "name": "Host Dashboard and Villa Management",
+      "category": "functionality",
+      "priority": "high",
+      "description": "Test host-specific features including villa management and reservations",
+      "steps": [
+        "Login as a host user or signup as host",
+        "Navigate to host dashboard",
+        "Verify villa listings and management options",
+        "Test villa creation/editing functionality",
+        "Check reservation management features",
+        "Verify revenue and analytics display",
+        "Test calendar and availability management",
+        "Check messaging system for guest communications"
+      ],
+      "expectedOutcome": "Host dashboard provides complete villa and reservation management functionality"
+    },
+    {
+      "id": "guest-dashboard-functionality",
+      "name": "Guest Dashboard and Trip Management",
+      "category": "functionality",
+      "priority": "high",
+      "description": "Test guest-specific features including trip management and wishlists",
+      "steps": [
+        "Login as a guest user",
+        "Navigate to guest dashboard",
+        "Verify upcoming and past trips display",
+        "Test wishlist functionality - add/remove villas",
+        "Check trip details and booking information",
+        "Test review submission for completed stays",
+        "Verify messaging system for host communications",
+        "Check profile editing functionality"
+      ],
+      "expectedOutcome": "Guest dashboard provides complete trip management and user account functionality"
+    },
+    {
+      "id": "messaging-system-test",
+      "name": "Real-time Messaging System Test",
+      "category": "functionality",
+      "priority": "medium",
+      "description": "Test messaging functionality between guests and hosts",
+      "steps": [
+        "Login as guest and navigate to messaging",
+        "Start a conversation with a host",
+        "Send messages and verify delivery",
+        "Check message thread organization",
+        "Test real-time message updates",
+        "Verify unread message indicators",
+        "Test message search and filtering if available",
+        "Check message notifications"
+      ],
+      "expectedOutcome": "Messaging system allows effective communication between users with real-time updates"
+    },
+    {
+      "id": "review-system-test",
+      "name": "Review and Rating System Test",
+      "category": "functionality",
+      "priority": "medium",
+      "description": "Test bidirectional review system for villas and guests",
+      "steps": [
+        "Complete a booking or use test booking",
+        "Submit a review for the villa with rating and text",
+        "Verify review appears on villa detail page",
+        "Test review editing functionality",
+        "Check host ability to review guests",
+        "Verify review aggregation and average ratings",
+        "Test review moderation if implemented",
+        "Check review sorting and filtering"
+      ],
+      "expectedOutcome": "Review system allows users to leave and manage reviews with proper display and aggregation"
+    },
+    {
+      "id": "responsive-design-test",
+      "name": "Responsive Design and Mobile Compatibility",
+      "category": "interface",
+      "priority": "medium",
+      "description": "Test application responsiveness across different screen sizes",
+      "steps": [
+        "Test homepage on desktop, tablet, and mobile viewports",
+        "Verify navigation menu adapts to mobile (hamburger menu)",
+        "Check search form responsiveness",
+        "Test villa cards and listings on different screen sizes",
+        "Verify booking forms work on mobile devices",
+        "Check dashboard layouts on various viewports",
+        "Test touch interactions on mobile",
+        "Verify text readability and button sizes on small screens"
+      ],
+      "expectedOutcome": "Application provides good user experience across all device sizes with proper responsive design"
+    },
+    {
+      "id": "search-filters-test",
+      "name": "Advanced Search Filters Test",
+      "category": "functionality",
+      "priority": "medium",
+      "description": "Test search filtering and sorting functionality",
+      "steps": [
+        "Navigate to search results page",
+        "Test price range filters",
+        "Apply bedroom/bathroom count filters",
+        "Test amenity filters (pool, WiFi, pet-friendly, etc.)",
+        "Apply location-based filters",
+        "Test instant book filter",
+        "Verify sorting options (price, rating, distance)",
+        "Check filter combinations work correctly",
+        "Test filter reset functionality"
+      ],
+      "expectedOutcome": "Search filters work correctly and provide relevant results based on user criteria"
+    },
+    {
+      "id": "error-handling-test",
+      "name": "Error Handling and Edge Cases",
+      "category": "reliability",
+      "priority": "medium",
+      "description": "Test application behavior with invalid inputs and error conditions",
+      "steps": [
+        "Test form validation with invalid email formats",
+        "Submit forms with missing required fields",
+        "Test booking with invalid date ranges",
+        "Try accessing non-existent villa pages",
+        "Test network error scenarios",
+        "Check behavior with expired sessions",
+        "Test invalid search parameters",
+        "Verify error messages are user-friendly and helpful"
+      ],
+      "expectedOutcome": "Application handles errors gracefully with appropriate user feedback and fallback behavior"
+    },
+    {
+      "id": "performance-test",
+      "name": "Application Performance Test",
+      "category": "performance",
+      "priority": "low",
+      "description": "Test application loading times and performance metrics",
+      "steps": [
+        "Measure homepage initial load time",
+        "Test search results loading performance",
+        "Check villa detail page load times",
+        "Verify image loading and optimization",
+        "Test application with slow network conditions",
+        "Check for memory leaks during navigation",
+        "Verify smooth scrolling and animations",
+        "Test concurrent user scenarios if possible"
+      ],
+      "expectedOutcome": "Application loads quickly and performs well under normal usage conditions"
+    },
+    {
+      "id": "accessibility-test",
+      "name": "Web Accessibility Compliance Test",
+      "category": "accessibility",
+      "priority": "medium",
+      "description": "Test application accessibility features and compliance",
+      "steps": [
+        "Test keyboard navigation throughout the application",
+        "Verify screen reader compatibility with form labels",
+        "Check color contrast ratios for text and backgrounds",
+        "Test focus indicators on interactive elements",
+        "Verify alt text for images",
+        "Check ARIA labels and roles where appropriate",
+        "Test with browser accessibility tools",
+        "Verify semantic HTML structure"
+      ],
+      "expectedOutcome": "Application meets basic accessibility standards and is usable by people with disabilities"
+    }
+  ]
+}
