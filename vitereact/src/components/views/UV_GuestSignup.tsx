@@ -94,10 +94,22 @@ const UV_GuestSignup: React.FC = () => {
 	>({
 		mutationFn: async (body) => {
 			const url = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
-			const res = await axios.post<SignupResponse>(`${url}/auth/signup`, body, {
-				headers: { "Content-Type": "application/json" },
-				timeout: 10000,
+			console.log("Making signup request to:", `${url}/auth/signup`);
+			console.log("Request body:", {
+				email: body.email,
+				display_name: body.display_name,
 			});
+
+			const res = await axios.post<SignupResponse>(`${url}/auth/signup`, body, {
+				headers: {
+					"Content-Type": "application/json",
+					Accept: "application/json",
+				},
+				timeout: 15000,
+				withCredentials: true,
+			});
+
+			console.log("Signup response:", res.status, res.data);
 			return res.data;
 		},
 		onSuccess: (data) => {

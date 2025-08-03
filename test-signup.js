@@ -3,7 +3,7 @@
 const axios = require("axios");
 
 async function testSignup() {
-  const baseURL = "http://localhost:3000/api";
+  const baseURL = "https://123testing-project-yes.launchpulse.ai/api";
 
   console.log("Testing signup flow...\n");
 

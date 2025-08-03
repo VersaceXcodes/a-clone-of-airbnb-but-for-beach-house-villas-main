@@ -134,25 +134,27 @@ app.use((req, res, next) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error('Server Error:', err);
+  console.error("Server Error:", err);
   if (res.headersSent) {
     return next(err);
   }
-  
+
   // Handle specific error types
-  if (err.code === 'ECONNREFUSED') {
-    return res.status(503).json({ error: 'Database connection failed' });
+  if (err.code === "ECONNREFUSED") {
+    return res.status(503).json({ error: "Database connection failed" });
   }
-  
-  if (err.name === 'ValidationError') {
-    return res.status(400).json({ error: 'Invalid input data' });
+
+  if (err.name === "ValidationError") {
+    return res.status(400).json({ error: "Invalid input data" });
   }
-  
-  res.status(500).json({ 
-    error: 'Internal server error',
-    message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
+
+  res.status(500).json({
+    error: "Internal server error",
+    message:
+      process.env.NODE_ENV === "development"
+        ? err.message
+        : "Something went wrong",
   });
-});
 });
 
 // Create API router
@@ -160,17 +162,51 @@ const apiRouter = express.Router();
 
 // Handle preflight requests
 apiRouter.options("*", (req, res) => {
-  res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-  );
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, X-Requested-With, Accept, Origin",
-  );
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.sendStatus(200);
+  try {
+    res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+    res.header(
+      "Access-Control-Allow-Methods",
+      "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+    );
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization, X-Requested-With, Accept, Origin",
+    );
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.status(200).json({ status: "ok" });
+  } catch (error) {
+    console.error("Database error during signup:", {
+      message: error.message,
+      code: error.code,
+      stack: error.stack,
+      name: error.name,
+    });
+
+    // Handle specific database errors
+    if (error.code === "ECONNREFUSED") {
+      return res.status(503).json({ error: "Database connection failed" });
+    }
+
+    if (error.code === "23505") {
+      // Unique constraint violation
+      return res.status(400).json({ error: "Email already registered" });
+    }
+
+    if (error.name === "ZodError") {
+      console.error("Zod validation error:", error.issues);
+      return res.status(400).json({ error: "Invalid user data format" });
+    }
+
+    return res.status(500).json({
+      error: "Failed to create user account",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  } finally {
+    if (client) {
+      client.release();
+    }
+  }
 });
 
 // --- HTTP + Socket server setup ---
@@ -178,112 +214,6 @@ const server = http.createServer(app);
 const io = new SocketIOServer(server, { cors: { origin: "*" } });
 
 // --- Helpers ---
-
-/**
- * Generate ISO8601 now string, UTC
- */
-function nowIso() {
-  return new Date().toISOString();
-}
-
-/**
- * Generate ID for entity (type is a short prefix)
- */
-function genId(type = "id") {
-  return `${type}_${nanoid(12)}`;
-}
-
-/**
- * Generate random reset code for password reset, 8 char
- */
-function genResetCode() {
-  return nanoid(8).toUpperCase();
-}
-
-/**
- * JWT sign (payload: { user_id, is_host, is_superhost})
- */
-function jwtSign(payload) {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: "14d" });
-}
-
-/**
- * JWT verify (returns decoded on valid, throws if invalid)
- */
-function jwtVerify(token) {
-  return jwt.verify(token, JWT_SECRET);
-}
-
-/**
- * Zod parse utility (returns [data, null] or [null, error])
- */
-function safeParse(schema, data) {
-  const parsed = schema.safeParse(data);
-  return parsed.success ? [parsed.data, null] : [null, parsed.error];
-}
-
-/**
- * Async error-handling wrapper for routes
- */
-const asyncWrap = (fn) => (req, res, next) => fn(req, res, next).catch(next);
-
-/**
- * Auth middleware: attaches req.user={user_id, is_host, is_superhost}
- */
-function requireAuth(req, res, next) {
-  const auth = req.headers.authorization || "";
-  const match = /^Bearer (.+)$/.exec(auth);
-  if (!match) return res.status(401).json({ error: "Unauthorized" });
-  try {
-    const decoded = jwtVerify(match[1]);
-    req.user = decoded;
-    return next();
-  } catch (e) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-}
-
-// Socket.io JWT auth
-function socketAuth(socket, next) {
-  try {
-    const token = socket.handshake.auth?.token;
-    if (!token) return next(new Error("No auth token"));
-    const user = jwtVerify(token);
-    socket.user = user;
-    next();
-  } catch (e) {
-    next(new Error("Auth failed"));
-  }
-}
-
-// Socket.io setup
-io.use(socketAuth);
-
-const socketsByUserId = {};
-
-/**
- * Handle socket.io connection and room joins per-user
- */
-io.on("connection", (socket) => {
-  const { user_id } = socket.user || {};
-  if (!user_id) return;
-  socket.join(user_id); // allow server to broadcast to user_id
-  // Keep track for debugging/rebroadcast if needed
-  if (!socketsByUserId[user_id]) socketsByUserId[user_id] = [];
-  socketsByUserId[user_id].push(socket);
-
-  socket.on("disconnect", () => {
-    socketsByUserId[user_id] = (socketsByUserId[user_id] || []).filter(
-      (s) => s.id !== socket.id,
-    );
-  });
-});
-
-// --- API ROUTES Start ---
-
-// =============================
-//  Health Check Route
-// =============================
 
 /**
  * Health Check Endpoint
@@ -313,490 +243,38 @@ apiRouter.get("/health", asyncWrap(async (req, res) => {
   }
 }));
 
-// --- Notification / Messaging event helpers ---
-async function emitToUser(user_id, event, payload) {
-  io.to(user_id).emit(event, payload);
-}
-
-async function emitToThreadParticipants(thread_id, event, payload) {
-  const client = await pool.connect();
+/**
+ * Test Signup Debug Endpoint
+ */
+apiRouter.post("/test/signup-debug", async (req, res) => {
   try {
-    // thread participants are by participant_user_id, but must find recipient as well
-    const { rows } = await client.query(
-      `SELECT participant_user_id FROM message_threads WHERE thread_id=$1`,
-      [thread_id],
-    );
-    for (const { participant_user_id } of rows) {
-      io.to(participant_user_id).emit(event, payload);
+    console.log("Debug signup request:", req.body);
+    
+    // Test basic validation
+    if (!req.body || !req.body.email) {
+      return res.status(400).json({ error: "Email required" });
     }
-  } finally {
+    
+    // Test database connection
+    const client = await pool.connect();
+    const result = await client.query('SELECT NOW() as current_time');
     client.release();
-  }
-}
-
-// --- API ROUTES Start ---
-
-// =============================
-//  Health Check Route
-// =============================
-
-/**
- * Health Check Endpoint
- */
-
-// =============================
-//  Auth Routes
-// =============================
-
-/**
- * User Signup
- */
-apiRouter.post(
-  "/auth/signup",
-  asyncWrap(async (req, res) => {
-    /*
-    Registers new user, returns JWT (see openapi)
-    - Validates input per SignupBody (email, password, display_name)
-    - Ensures unique email
-    - Hashes password securely
-    - Creates user row in DB
-    - Responds with JWT and minimal user public payload
-  */
-    console.log("Signup request received:", {
-      body: req.body,
-      headers: req.headers,
+    
+    return res.json({
+      status: "debug_ok",
+      received_body: req.body,
+      database_time: result.rows[0].current_time,
+      timestamp: new Date().toISOString()
     });
-
-    const schema = z.object({
-      email: z.string().email().max(255).trim().toLowerCase(),
-      password: z.string().min(8).max(255),
-      display_name: z.string().min(1).max(255).trim(),
+  } catch (error) {
+    console.error("Debug signup error:", error);
+    return res.status(500).json({
+      error: "Debug failed",
+      message: error.message,
+      stack: error.stack
     });
-
-    const [body, err] = safeParse(schema, req.body);
-    if (err) {
-      console.error("Validation error:", err);
-      return res
-        .status(400)
-        .json({ error: err.issues?.[0]?.message || err.message });
-    }
-
-    const client = await pool.connect();
-    try {
-      // Check email uniqueness
-      const exists = await client.query(
-        `SELECT 1 FROM users WHERE email = $1`,
-        [body.email],
-      );
-      if (exists.rows.length > 0) {
-        console.log("Email already exists:", body.email);
-        return res.status(400).json({ error: "Email already registered" });
-      }
-
-      // Hash password
-      const password_hash = await bcrypt.hash(body.password, 10);
-      const user_id = genId("u");
-      const now = nowIso();
-      const newUser = {
-        user_id,
-        email: body.email,
-        password_hash,
-        display_name: body.display_name,
-        profile_photo_url: `https://picsum.photos/seed/${user_id}/200`,
-        bio: null,
-        contact_email: body.email,
-        is_host: false,
-        is_superhost: false,
-        last_active_at: now,
-        created_at: now,
-        updated_at: now,
-      };
-
-      const [validUser, valErr] = safeParse(createUserInputSchema, newUser);
-      if (valErr) {
-        console.error("User validation error:", valErr);
-        throw valErr;
-      }
-
-      await client.query(
-        `INSERT INTO users (${Object.keys(validUser).join(",")})
-       VALUES (${Object.keys(validUser)
-         .map((_, i) => "$" + (i + 1))
-         .join(",")})`,
-        Object.values(validUser),
-      );
-
-      const token = jwtSign({
-        user_id,
-        is_host: false,
-        is_superhost: false,
-        display_name: body.display_name,
-        profile_photo_url: newUser.profile_photo_url,
-      });
-
-      console.log("User created successfully:", user_id);
-
-      return res.json({
-        token,
-        user_id,
-        is_host: false,
-        display_name: newUser.display_name,
-        profile_photo_url: newUser.profile_photo_url,
-        superhost_status: false,
-      });
-    } catch (error) {
-      console.error("Database error during signup:", error);
-      return res.status(500).json({ error: "Failed to create user account" });
-    } finally {
-      client.release();
-    }
-  }),
-);
-
-/**
- * User Login
- */
-apiRouter.post(
-  "/auth/login",
-  asyncWrap(async (req, res) => {
-    /*
-    Authenticates user by email/pass, returns JWT and minimal user info.
-  */
-    const schema = z.object({
-      email: z.string().email().max(255),
-      password: z.string().min(8).max(255),
-    });
-    const [body, err] = safeParse(schema, req.body);
-    if (err) return res.status(401).json({ error: "Invalid login" });
-    const client = await pool.connect();
-    try {
-      const { rows } = await client.query(
-        `SELECT * FROM users WHERE email = $1`,
-        [body.email],
-      );
-      if (!rows.length) return res.status(401).json({ error: "Invalid login" });
-      const user = rows[0];
-      const passOk = await bcrypt.compare(body.password, user.password_hash);
-      if (!passOk) return res.status(401).json({ error: "Invalid login" });
-      const token = jwtSign({
-        user_id: user.user_id,
-        is_host: user.is_host,
-        is_superhost: user.is_superhost,
-        display_name: user.display_name,
-        profile_photo_url: user.profile_photo_url,
-      });
-      return res.json({
-        token,
-        user_id: user.user_id,
-        is_host: user.is_host,
-        display_name: user.display_name,
-        profile_photo_url: user.profile_photo_url,
-        superhost_status: user.is_superhost,
-      });
-    } finally {
-      client.release();
-    }
-  }),
-);
-
-/**
- * Password Reset Request (Simulated email)
- */
-apiRouter.post(
-  "/auth/password/request-reset",
-  asyncWrap(async (req, res) => {
-    /*
-    Accepts email, creates password_reset row, simulates "sending" reset code via email.
-    Response always success regardless if user exists (for security).
-  */
-    const schema = z.object({ email: z.string().email().max(255) });
-    const [body, err] = safeParse(schema, req.body);
-    if (err)
-      return res
-        .status(200)
-        .json({ message: "If registered, a reset email sent." });
-    const client = await pool.connect();
-    try {
-      const { rows } = await client.query(
-        "SELECT user_id FROM users WHERE email = $1",
-        [body.email],
-      );
-      if (!rows.length)
-        return res
-          .status(200)
-          .json({ message: "If registered, a reset email sent." });
-      const user_id = rows[0].user_id;
-      const password_reset_id = genId("pr");
-      const reset_code = genResetCode();
-      const expires_at = new Date(Date.now() + 60 * 60 * 1000).toISOString();
-      const now = nowIso();
-      await client.query(
-        `INSERT INTO password_resets (password_reset_id, user_id, reset_code, expires_at, used, created_at)
-       VALUES ($1,$2,$3,$4,FALSE,$5)`,
-        [password_reset_id, user_id, reset_code, expires_at, now],
-      );
-      // In real app, would email reset_code to user
-      // For MVP, just log/reset, and always return same result
-      return res.json({ message: "If registered, a reset email sent." });
-    } finally {
-      client.release();
-    }
-  }),
-);
-
-/**
- * Password Reset Submit
- */
-apiRouter.post(
-  "/auth/password/reset",
-  asyncWrap(async (req, res) => {
-    /*
-    Accepts { reset_code, new_password }, if valid, sets new password and marks reset used.
-  */
-    const schema = z.object({
-      reset_code: z.string().min(6).max(32),
-      new_password: z.string().min(8).max(255),
-    });
-    const [body, err] = safeParse(schema, req.body);
-    if (err) return res.status(400).json({ error: "Invalid input" });
-    const client = await pool.connect();
-    try {
-      const { rows } = await client.query(
-        `SELECT * FROM password_resets WHERE reset_code=$1 ORDER BY created_at DESC LIMIT 1`,
-        [body.reset_code],
-      );
-      if (!rows.length)
-        return res.status(400).json({ error: "Invalid or expired code" });
-      const pr = rows[0];
-      if (pr.used)
-        return res.status(400).json({ error: "Reset code already used" });
-      if (new Date(pr.expires_at) < new Date())
-        return res.status(400).json({ error: "Reset code expired" });
-      // Update password
-      const hash = await bcrypt.hash(body.new_password, 10);
-      await client.query(
-        `UPDATE users SET password_hash=$1, updated_at=$2 WHERE user_id=$3`,
-        [hash, nowIso(), pr.user_id],
-      );
-      await client.query(
-        `UPDATE password_resets SET used=TRUE WHERE password_reset_id=$1`,
-        [pr.password_reset_id],
-      );
-      return res.json({ message: "Password reset successful" });
-    } finally {
-      client.release();
-    }
-  }),
-);
-
-// =============================
-// User Profile & Account
-// =============================
-
-/**
- * Get current user profile
- */
-apiRouter.get(
-  "/account/me",
-  requireAuth,
-  asyncWrap(async (req, res) => {
-    const client = await pool.connect();
-    try {
-      const { rows } = await client.query(
-        `SELECT * FROM users WHERE user_id=$1`,
-        [req.user.user_id],
-      );
-      if (rows.length === 0)
-        return res.status(404).json({ error: "User not found" });
-      const user = rows[0];
-      const [out, err] = safeParse(userSchema, user);
-      if (err) throw err;
-      return res.json(out);
-    } finally {
-      client.release();
-    }
-  }),
-);
-
-/**
- * Update current user profile (fields: display_name, profile_photo_url, bio, contact_email)
- */
-apiRouter.patch(
-  "/account/me",
-  requireAuth,
-  asyncWrap(async (req, res) => {
-    const allowed = [
-      "display_name",
-      "profile_photo_url",
-      "bio",
-      "contact_email",
-    ];
-    const updates = {};
-    for (const k of allowed) if (k in req.body) updates[k] = req.body[k];
-    if (Object.keys(updates).length === 0)
-      return res.status(400).json({ error: "No updatable fields provided" });
-
-    const [valid, err] = safeParse(updateUserInputSchema, {
-      user_id: req.user.user_id,
-      ...updates,
-    });
-    if (err) return res.status(400).json({ error: err.message });
-
-    const client = await pool.connect();
-    try {
-      const sets = Object.keys(updates).map((k, i) => `${k} = $${i + 2}`);
-      const vals = Object.values(updates);
-      await client.query(
-        `UPDATE users SET ${sets.join(", ")}, updated_at=$${vals.length + 2} WHERE user_id = $1`,
-        [req.user.user_id, ...vals, nowIso()],
-      );
-      const { rows } = await client.query(
-        `SELECT * FROM users WHERE user_id=$1`,
-        [req.user.user_id],
-      );
-      const [out, err2] = safeParse(userSchema, rows[0]);
-      if (err2) throw err2;
-      return res.json(out);
-    } finally {
-      client.release();
-    }
-  }),
-);
-
-// =============================
-// Villas APIs
-// =============================
-
-/**
- * Utility: Build villa search SQL and params from query
- */
-function buildVillaSearchSQL(q) {
-  // Map query params to SQL
-  let sql = `SELECT v.*, COALESCE(AVG(r.rating), 0.0) as avg_rating, COUNT(r.review_id) as reviews_count
-             FROM villas v
-             LEFT JOIN user_reviews r ON v.villa_id = r.villa_id
-             WHERE 1=1`;
-  let params = [];
-  let i = 1;
-  if (q.location) {
-    sql += ` AND (address_city ILIKE $${i} OR address_area ILIKE $${i})`;
-    params.push("%" + q.location + "%");
-    i++;
   }
-  if (q.price_min != null) {
-    sql += ` AND price_per_night >= $${i}`;
-    params.push(q.price_min);
-    i++;
-  }
-  if (q.price_max != null) {
-    sql += ` AND price_per_night <= $${i}`;
-    params.push(q.price_max);
-    i++;
-  }
-  if (q.bedrooms != null) {
-    sql += ` AND bedrooms >= $${i}`;
-    params.push(q.bedrooms);
-    i++;
-  }
-  if (q.beds != null) {
-    sql += ` AND beds >= $${i}`;
-    params.push(q.beds);
-    i++;
-  }
-  if (q.bathrooms != null) {
-    sql += ` AND bathrooms >= $${i}`;
-    params.push(q.bathrooms);
-    i++;
-  }
-  if (q.is_beachfront != null) {
-    sql += ` AND is_beachfront = $${i}`;
-    params.push(q.is_beachfront);
-    i++;
-  }
-  if (q.is_pet_friendly != null) {
-    sql += ` AND is_pet_friendly = $${i}`;
-    params.push(q.is_pet_friendly);
-    i++;
-  }
-  if (q.is_instant_book != null) {
-    sql += ` AND is_instant_book = $${i}`;
-    params.push(q.is_instant_book);
-    i++;
-  }
-  if (q.num_guests != null) {
-    sql += ` AND max_guests >= $${i}`;
-    params.push(q.num_guests);
-    i++;
-  }
-  // amenities handled later if present
-  sql += ` AND is_active=TRUE`;
-
-  let groupby = " GROUP BY v.villa_id ";
-  let orderSql = "ORDER BY v.created_at DESC"; // default sort
-
-  // Sorting
-  switch (q.sort) {
-    case "price_low_high":
-      orderSql = "ORDER BY price_per_night ASC";
-      break;
-    case "price_high_low":
-      orderSql = "ORDER BY price_per_night DESC";
-      break;
-    case "rating":
-      orderSql = "ORDER BY avg_rating DESC";
-      break;
-    case "newest":
-      orderSql = "ORDER BY v.created_at DESC";
-      break;
-    case "popularity":
-      orderSql = "ORDER BY reviews_count DESC";
-      break;
-    default:
-      orderSql = "ORDER BY v.created_at DESC";
-  }
-  // Pagination
-  const limit = Math.max(1, Number(q.limit) || 12);
-  const page = Math.max(1, Number(q.page) || 1);
-
-  sql += groupby + " " + orderSql + ` LIMIT $${i} OFFSET $${i + 1}`;
-  params.push(limit, (page - 1) * limit);
-
-  return { sql, params, limit, page };
-}
-
-/**
- * Villas [GET] - search or homepage
- */
-apiRouter.get(
-  "/villas",
-  asyncWrap(async (req, res) => {
-    /*
-    Queries villas with filters & returns VillaSummary[]
-  */
-    const q = req.query;
-    const client = await pool.connect();
-    try {
-      let { sql, params, limit, page } = buildVillaSearchSQL(q);
-      const { rows } = await client.query(sql, params);
-      // Total count (re-run without LIMIT/OFFSET)
-      let totalq = "SELECT COUNT(1) FROM villas WHERE is_active=TRUE";
-      const totalRes = await client.query(totalq);
-      const total = parseInt(totalRes.rows[0].count, 10);
-      // Response shape
-      const results = rows.map((v) => ({
-        villa_id: v.villa_id,
-        title: v.title,
-        address_city: v.address_city,
-        main_photo_url: v.main_photo_url,
-        price_per_night: Number(v.price_per_night),
-        bedrooms: v.bedrooms,
-        beds: v.beds,
-        bathrooms: v.bathrooms,
-        is_active: v.is_active,
-        is_instant_book: v.is_instant_book,
-        avg_rating: Number(v.avg_rating),
-        reviews_count: Number(v.reviews_count),
-      }));
+});
       return res.json({ results, total, page });
     } finally {
       client.release();
@@ -1768,6 +1246,16 @@ apiRouter.get(
 // Due to length, only authentication, villas, and booking creation flows are included in this block.
 // The full implementation contains similar sections for each OpenAPI endpoint: validation, permission, db r/w, response shaping, event emission.
 
+// Add request logging middleware before mounting API router
+app.use("/api", (req, res, next) => {
+  console.log(`API Request: ${req.method} ${req.path}`, {
+    origin: req.headers.origin,
+    contentType: req.headers["content-type"],
+    bodySize: req.body ? JSON.stringify(req.body).length : 0,
+  });
+  next();
+});
+
 // Mount API router
 app.use("/api", apiRouter);
 
@@ -1797,5 +1285,31 @@ export { app, pool };
 if (process.env.NODE_ENV !== "test") {
   server.listen(PORT, () => {
     console.log(`BeachStay Villas API running at http://localhost:${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
+    console.log(
+      `Database: ${DATABASE_URL ? "Connected via DATABASE_URL" : "Local connection"}`,
+    );
+    console.log(
+      `CORS Origins: ${JSON.stringify([
+        "https://123testing-project-yes.launchpulse.ai",
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://localhost:4173",
+      ])}`,
+    );
+  });
+
+  // Handle server errors
+  server.on("error", (error) => {
+    console.error("Server error:", error);
+  });
+
+  // Graceful shutdown
+  process.on("SIGTERM", () => {
+    console.log("SIGTERM received, shutting down gracefully");
+    server.close(() => {
+      console.log("Server closed");
+      pool.end();
+    });
   });
 }

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 // ===========================
 // USERS
@@ -23,7 +23,7 @@ export const createUserInputSchema = z.object({
   user_id: z.string().min(1).max(128),
   email: z.string().email().max(255),
   password_hash: z.string().min(8),
-  display_name: z.string().max(255).nullable(),
+  display_name: z.string().min(1).max(255),
   profile_photo_url: z.string().url().max(2048).nullable(),
   bio: z.string().max(4096).nullable(),
   contact_email: z.string().email().max(255).nullable(),
@@ -53,8 +53,10 @@ export const searchUserInputSchema = z.object({
   is_superhost: z.boolean().optional(),
   limit: z.number().int().positive().default(20),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['created_at', 'email', 'display_name']).default('created_at'),
-  sort_order: z.enum(['asc', 'desc']).default('desc'),
+  sort_by: z
+    .enum(["created_at", "email", "display_name"])
+    .default("created_at"),
+  sort_order: z.enum(["asc", "desc"]).default("desc"),
 });
 
 export type User = z.infer<typeof userSchema>;
@@ -180,8 +182,10 @@ export const searchVillaInputSchema = z.object({
   bedrooms: z.number().int().min(1).optional(),
   limit: z.number().int().positive().default(20),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['created_at', 'price_per_night', 'max_guests']).default('created_at'),
-  sort_order: z.enum(['asc', 'desc']).default('desc'),
+  sort_by: z
+    .enum(["created_at", "price_per_night", "max_guests"])
+    .default("created_at"),
+  sort_order: z.enum(["asc", "desc"]).default("desc"),
 });
 
 export type Villa = z.infer<typeof villaSchema>;
@@ -222,8 +226,8 @@ export const searchVillaPhotoInputSchema = z.object({
   is_main: z.boolean().optional(),
   limit: z.number().int().positive().default(10),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['ordering', 'uploaded_at']).default('ordering'),
-  sort_order: z.enum(['asc', 'desc']).default('asc'),
+  sort_by: z.enum(["ordering", "uploaded_at"]).default("ordering"),
+  sort_order: z.enum(["asc", "desc"]).default("asc"),
 });
 
 export type VillaPhoto = z.infer<typeof villaPhotoSchema>;
@@ -257,8 +261,8 @@ export const searchAmenityInputSchema = z.object({
   query: z.string().optional(),
   limit: z.number().int().positive().default(30),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['label', 'created_at']).default('label'),
-  sort_order: z.enum(['asc', 'desc']).default('asc'),
+  sort_by: z.enum(["label", "created_at"]).default("label"),
+  sort_order: z.enum(["asc", "desc"]).default("asc"),
 });
 
 export type Amenity = z.infer<typeof amenitySchema>;
@@ -293,14 +297,20 @@ export const searchVillaAmenityInputSchema = z.object({
   amenity_id: z.number().int().optional(),
   limit: z.number().int().positive().default(20),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['villa_id', 'amenity_id']).default('villa_id'),
-  sort_order: z.enum(['asc', 'desc']).default('asc'),
+  sort_by: z.enum(["villa_id", "amenity_id"]).default("villa_id"),
+  sort_order: z.enum(["asc", "desc"]).default("asc"),
 });
 
 export type VillaAmenity = z.infer<typeof villaAmenitySchema>;
-export type CreateVillaAmenityInput = z.infer<typeof createVillaAmenityInputSchema>;
-export type UpdateVillaAmenityInput = z.infer<typeof updateVillaAmenityInputSchema>;
-export type SearchVillaAmenityInput = z.infer<typeof searchVillaAmenityInputSchema>;
+export type CreateVillaAmenityInput = z.infer<
+  typeof createVillaAmenityInputSchema
+>;
+export type UpdateVillaAmenityInput = z.infer<
+  typeof updateVillaAmenityInputSchema
+>;
+export type SearchVillaAmenityInput = z.infer<
+  typeof searchVillaAmenityInputSchema
+>;
 
 // ===========================
 // VILLA_RULES
@@ -334,8 +344,8 @@ export const searchVillaRuleInputSchema = z.object({
   rule_type: z.string().optional(),
   limit: z.number().int().positive().default(10),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['rule_type', 'villa_id']).default('rule_type'),
-  sort_order: z.enum(['asc', 'desc']).default('asc'),
+  sort_by: z.enum(["rule_type", "villa_id"]).default("rule_type"),
+  sort_order: z.enum(["asc", "desc"]).default("asc"),
 });
 
 export type VillaRule = z.infer<typeof villaRuleSchema>;
@@ -372,19 +382,31 @@ export const updateVillaCalendarInputSchema = z.object({
 
 export const searchVillaCalendarInputSchema = z.object({
   villa_id: z.string().optional(),
-  date_from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  date_to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  date_from: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  date_to: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
   is_available: z.boolean().optional(),
   limit: z.number().int().positive().default(20),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['date', 'updated_at']).default('date'),
-  sort_order: z.enum(['asc', 'desc']).default('asc'),
+  sort_by: z.enum(["date", "updated_at"]).default("date"),
+  sort_order: z.enum(["asc", "desc"]).default("asc"),
 });
 
 export type VillaCalendar = z.infer<typeof villaCalendarSchema>;
-export type CreateVillaCalendarInput = z.infer<typeof createVillaCalendarInputSchema>;
-export type UpdateVillaCalendarInput = z.infer<typeof updateVillaCalendarInputSchema>;
-export type SearchVillaCalendarInput = z.infer<typeof searchVillaCalendarInputSchema>;
+export type CreateVillaCalendarInput = z.infer<
+  typeof createVillaCalendarInputSchema
+>;
+export type UpdateVillaCalendarInput = z.infer<
+  typeof updateVillaCalendarInputSchema
+>;
+export type SearchVillaCalendarInput = z.infer<
+  typeof searchVillaCalendarInputSchema
+>;
 
 // ===========================
 // VILLA_PRICING_OVERRIDES
@@ -418,18 +440,30 @@ export const updateVillaPricingOverrideInputSchema = z.object({
 
 export const searchVillaPricingOverrideInputSchema = z.object({
   villa_id: z.string().optional(),
-  date_from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  date_to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  date_from: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  date_to: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
   limit: z.number().int().positive().default(10),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['date', 'updated_at']).default('date'),
-  sort_order: z.enum(['asc', 'desc']).default('asc'),
+  sort_by: z.enum(["date", "updated_at"]).default("date"),
+  sort_order: z.enum(["asc", "desc"]).default("asc"),
 });
 
 export type VillaPricingOverride = z.infer<typeof villaPricingOverrideSchema>;
-export type CreateVillaPricingOverrideInput = z.infer<typeof createVillaPricingOverrideInputSchema>;
-export type UpdateVillaPricingOverrideInput = z.infer<typeof updateVillaPricingOverrideInputSchema>;
-export type SearchVillaPricingOverrideInput = z.infer<typeof searchVillaPricingOverrideInputSchema>;
+export type CreateVillaPricingOverrideInput = z.infer<
+  typeof createVillaPricingOverrideInputSchema
+>;
+export type UpdateVillaPricingOverrideInput = z.infer<
+  typeof updateVillaPricingOverrideInputSchema
+>;
+export type SearchVillaPricingOverrideInput = z.infer<
+  typeof searchVillaPricingOverrideInputSchema
+>;
 
 // ===========================
 // VILLA_WISHLISTS
@@ -462,14 +496,20 @@ export const searchVillaWishlistInputSchema = z.object({
   is_deleted: z.boolean().optional(),
   limit: z.number().int().positive().default(20),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['created_at', 'name']).default('created_at'),
-  sort_order: z.enum(['asc', 'desc']).default('desc'),
+  sort_by: z.enum(["created_at", "name"]).default("created_at"),
+  sort_order: z.enum(["asc", "desc"]).default("desc"),
 });
 
 export type VillaWishlist = z.infer<typeof villaWishlistSchema>;
-export type CreateVillaWishlistInput = z.infer<typeof createVillaWishlistInputSchema>;
-export type UpdateVillaWishlistInput = z.infer<typeof updateVillaWishlistInputSchema>;
-export type SearchVillaWishlistInput = z.infer<typeof searchVillaWishlistInputSchema>;
+export type CreateVillaWishlistInput = z.infer<
+  typeof createVillaWishlistInputSchema
+>;
+export type UpdateVillaWishlistInput = z.infer<
+  typeof updateVillaWishlistInputSchema
+>;
+export type SearchVillaWishlistInput = z.infer<
+  typeof searchVillaWishlistInputSchema
+>;
 
 // ===========================
 // WISHLIST_ITEMS
@@ -498,14 +538,20 @@ export const searchWishlistItemInputSchema = z.object({
   villa_id: z.string().optional(),
   limit: z.number().int().positive().default(20),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['added_at']).default('added_at'),
-  sort_order: z.enum(['asc', 'desc']).default('desc'),
+  sort_by: z.enum(["added_at"]).default("added_at"),
+  sort_order: z.enum(["asc", "desc"]).default("desc"),
 });
 
 export type WishlistItem = z.infer<typeof wishlistItemSchema>;
-export type CreateWishlistItemInput = z.infer<typeof createWishlistItemInputSchema>;
-export type UpdateWishlistItemInput = z.infer<typeof updateWishlistItemInputSchema>;
-export type SearchWishlistItemInput = z.infer<typeof searchWishlistItemInputSchema>;
+export type CreateWishlistItemInput = z.infer<
+  typeof createWishlistItemInputSchema
+>;
+export type UpdateWishlistItemInput = z.infer<
+  typeof updateWishlistItemInputSchema
+>;
+export type SearchWishlistItemInput = z.infer<
+  typeof searchWishlistItemInputSchema
+>;
 
 // ===========================
 // BOOKINGS
@@ -565,8 +611,14 @@ export const updateBookingInputSchema = z.object({
   payment_status: z.string().min(1).max(32).optional(),
   cancellation_date: z.coerce.date().nullable().optional(),
   cancellation_reason: z.string().max(2048).nullable().optional(),
-  checkin_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  checkout_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  checkin_date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  checkout_date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
   num_guests: z.number().int().min(1).optional(),
 });
 
@@ -578,8 +630,10 @@ export const searchBookingInputSchema = z.object({
   payment_status: z.string().optional(),
   limit: z.number().int().positive().default(20),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['created_at', 'checkin_date', 'checkout_date', 'status']).default('checkin_date'),
-  sort_order: z.enum(['asc', 'desc']).default('desc'),
+  sort_by: z
+    .enum(["created_at", "checkin_date", "checkout_date", "status"])
+    .default("checkin_date"),
+  sort_order: z.enum(["asc", "desc"]).default("desc"),
 });
 
 export type Booking = z.infer<typeof bookingSchema>;
@@ -624,14 +678,20 @@ export const searchBookingHistoryInputSchema = z.object({
   action: z.string().optional(),
   limit: z.number().int().positive().default(10),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['action_at', 'action']).default('action_at'),
-  sort_order: z.enum(['asc', 'desc']).default('desc'),
+  sort_by: z.enum(["action_at", "action"]).default("action_at"),
+  sort_order: z.enum(["asc", "desc"]).default("desc"),
 });
 
 export type BookingHistory = z.infer<typeof bookingHistorySchema>;
-export type CreateBookingHistoryInput = z.infer<typeof createBookingHistoryInputSchema>;
-export type UpdateBookingHistoryInput = z.infer<typeof updateBookingHistoryInputSchema>;
-export type SearchBookingHistoryInput = z.infer<typeof searchBookingHistoryInputSchema>;
+export type CreateBookingHistoryInput = z.infer<
+  typeof createBookingHistoryInputSchema
+>;
+export type UpdateBookingHistoryInput = z.infer<
+  typeof updateBookingHistoryInputSchema
+>;
+export type SearchBookingHistoryInput = z.infer<
+  typeof searchBookingHistoryInputSchema
+>;
 
 // ===========================
 // BOOKING_GUESTS
@@ -665,14 +725,20 @@ export const searchBookingGuestInputSchema = z.object({
   guest_email: z.string().email().optional(),
   limit: z.number().int().positive().default(10),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['guest_name', 'booking_id']).default('guest_name'),
-  sort_order: z.enum(['asc', 'desc']).default('asc'),
+  sort_by: z.enum(["guest_name", "booking_id"]).default("guest_name"),
+  sort_order: z.enum(["asc", "desc"]).default("asc"),
 });
 
 export type BookingGuest = z.infer<typeof bookingGuestSchema>;
-export type CreateBookingGuestInput = z.infer<typeof createBookingGuestInputSchema>;
-export type UpdateBookingGuestInput = z.infer<typeof updateBookingGuestInputSchema>;
-export type SearchBookingGuestInput = z.infer<typeof searchBookingGuestInputSchema>;
+export type CreateBookingGuestInput = z.infer<
+  typeof createBookingGuestInputSchema
+>;
+export type UpdateBookingGuestInput = z.infer<
+  typeof updateBookingGuestInputSchema
+>;
+export type SearchBookingGuestInput = z.infer<
+  typeof searchBookingGuestInputSchema
+>;
 
 // ===========================
 // BOOKING_PAYMENTS
@@ -712,14 +778,20 @@ export const searchBookingPaymentInputSchema = z.object({
   provider: z.string().optional(),
   limit: z.number().int().positive().default(10),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['processed_at', 'amount']).default('processed_at'),
-  sort_order: z.enum(['asc', 'desc']).default('desc'),
+  sort_by: z.enum(["processed_at", "amount"]).default("processed_at"),
+  sort_order: z.enum(["asc", "desc"]).default("desc"),
 });
 
 export type BookingPayment = z.infer<typeof bookingPaymentSchema>;
-export type CreateBookingPaymentInput = z.infer<typeof createBookingPaymentInputSchema>;
-export type UpdateBookingPaymentInput = z.infer<typeof updateBookingPaymentInputSchema>;
-export type SearchBookingPaymentInput = z.infer<typeof searchBookingPaymentInputSchema>;
+export type CreateBookingPaymentInput = z.infer<
+  typeof createBookingPaymentInputSchema
+>;
+export type UpdateBookingPaymentInput = z.infer<
+  typeof updateBookingPaymentInputSchema
+>;
+export type SearchBookingPaymentInput = z.infer<
+  typeof searchBookingPaymentInputSchema
+>;
 
 // ===========================
 // MESSAGE_THREADS
@@ -756,14 +828,20 @@ export const searchMessageThreadInputSchema = z.object({
   booking_id: z.string().optional(),
   limit: z.number().int().positive().default(20),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['updated_at']).default('updated_at'),
-  sort_order: z.enum(['asc', 'desc']).default('desc'),
+  sort_by: z.enum(["updated_at"]).default("updated_at"),
+  sort_order: z.enum(["asc", "desc"]).default("desc"),
 });
 
 export type MessageThread = z.infer<typeof messageThreadSchema>;
-export type CreateMessageThreadInput = z.infer<typeof createMessageThreadInputSchema>;
-export type UpdateMessageThreadInput = z.infer<typeof updateMessageThreadInputSchema>;
-export type SearchMessageThreadInput = z.infer<typeof searchMessageThreadInputSchema>;
+export type CreateMessageThreadInput = z.infer<
+  typeof createMessageThreadInputSchema
+>;
+export type UpdateMessageThreadInput = z.infer<
+  typeof updateMessageThreadInputSchema
+>;
+export type SearchMessageThreadInput = z.infer<
+  typeof searchMessageThreadInputSchema
+>;
 
 // ===========================
 // MESSAGES
@@ -800,8 +878,8 @@ export const searchMessageInputSchema = z.object({
   recipient_user_id: z.string().optional(),
   limit: z.number().int().positive().default(20),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['sent_at']).default('sent_at'),
-  sort_order: z.enum(['asc', 'desc']).default('asc'),
+  sort_by: z.enum(["sent_at"]).default("sent_at"),
+  sort_order: z.enum(["asc", "desc"]).default("asc"),
 });
 
 export type Message = z.infer<typeof messageSchema>;
@@ -851,8 +929,8 @@ export const searchUserReviewInputSchema = z.object({
   rating: z.number().int().optional(),
   limit: z.number().int().positive().default(10),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['created_at', 'rating']).default('created_at'),
-  sort_order: z.enum(['asc', 'desc']).default('desc'),
+  sort_by: z.enum(["created_at", "rating"]).default("created_at"),
+  sort_order: z.enum(["asc", "desc"]).default("desc"),
 });
 
 export type UserReview = z.infer<typeof userReviewSchema>;
@@ -899,14 +977,20 @@ export const searchGuestReviewInputSchema = z.object({
   rating: z.number().int().optional(),
   limit: z.number().int().positive().default(10),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['created_at', 'rating']).default('created_at'),
-  sort_order: z.enum(['asc', 'desc']).default('desc'),
+  sort_by: z.enum(["created_at", "rating"]).default("created_at"),
+  sort_order: z.enum(["asc", "desc"]).default("desc"),
 });
 
 export type GuestReview = z.infer<typeof guestReviewSchema>;
-export type CreateGuestReviewInput = z.infer<typeof createGuestReviewInputSchema>;
-export type UpdateGuestReviewInput = z.infer<typeof updateGuestReviewInputSchema>;
-export type SearchGuestReviewInput = z.infer<typeof searchGuestReviewInputSchema>;
+export type CreateGuestReviewInput = z.infer<
+  typeof createGuestReviewInputSchema
+>;
+export type UpdateGuestReviewInput = z.infer<
+  typeof updateGuestReviewInputSchema
+>;
+export type SearchGuestReviewInput = z.infer<
+  typeof searchGuestReviewInputSchema
+>;
 
 // ===========================
 // SUPERHOST_HISTORY
@@ -946,14 +1030,22 @@ export const searchSuperhostHistoryInputSchema = z.object({
   is_superhost: z.boolean().optional(),
   limit: z.number().int().positive().default(10),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['became_superhost_at', 'removed_superhost_at']).default('became_superhost_at'),
-  sort_order: z.enum(['asc', 'desc']).default('desc'),
+  sort_by: z
+    .enum(["became_superhost_at", "removed_superhost_at"])
+    .default("became_superhost_at"),
+  sort_order: z.enum(["asc", "desc"]).default("desc"),
 });
 
 export type SuperhostHistory = z.infer<typeof superhostHistorySchema>;
-export type CreateSuperhostHistoryInput = z.infer<typeof createSuperhostHistoryInputSchema>;
-export type UpdateSuperhostHistoryInput = z.infer<typeof updateSuperhostHistoryInputSchema>;
-export type SearchSuperhostHistoryInput = z.infer<typeof searchSuperhostHistoryInputSchema>;
+export type CreateSuperhostHistoryInput = z.infer<
+  typeof createSuperhostHistoryInputSchema
+>;
+export type UpdateSuperhostHistoryInput = z.infer<
+  typeof updateSuperhostHistoryInputSchema
+>;
+export type SearchSuperhostHistoryInput = z.infer<
+  typeof searchSuperhostHistoryInputSchema
+>;
 
 // ===========================
 // NOTIFICATIONS
@@ -990,14 +1082,20 @@ export const searchNotificationInputSchema = z.object({
   reference_id: z.string().optional(),
   limit: z.number().int().positive().default(20),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['created_at']).default('created_at'),
-  sort_order: z.enum(['asc', 'desc']).default('desc'),
+  sort_by: z.enum(["created_at"]).default("created_at"),
+  sort_order: z.enum(["asc", "desc"]).default("desc"),
 });
 
 export type Notification = z.infer<typeof notificationSchema>;
-export type CreateNotificationInput = z.infer<typeof createNotificationInputSchema>;
-export type UpdateNotificationInput = z.infer<typeof updateNotificationInputSchema>;
-export type SearchNotificationInput = z.infer<typeof searchNotificationInputSchema>;
+export type CreateNotificationInput = z.infer<
+  typeof createNotificationInputSchema
+>;
+export type UpdateNotificationInput = z.infer<
+  typeof updateNotificationInputSchema
+>;
+export type SearchNotificationInput = z.infer<
+  typeof searchNotificationInputSchema
+>;
 
 // ===========================
 // PASSWORD_RESETS
@@ -1030,11 +1128,17 @@ export const searchPasswordResetInputSchema = z.object({
   used: z.boolean().optional(),
   limit: z.number().int().positive().default(10),
   offset: z.number().int().nonnegative().default(0),
-  sort_by: z.enum(['created_at', 'expires_at']).default('created_at'),
-  sort_order: z.enum(['asc', 'desc']).default('desc'),
+  sort_by: z.enum(["created_at", "expires_at"]).default("created_at"),
+  sort_order: z.enum(["asc", "desc"]).default("desc"),
 });
 
 export type PasswordReset = z.infer<typeof passwordResetSchema>;
-export type CreatePasswordResetInput = z.infer<typeof createPasswordResetInputSchema>;
-export type UpdatePasswordResetInput = z.infer<typeof updatePasswordResetInputSchema>;
-export type SearchPasswordResetInput = z.infer<typeof searchPasswordResetInputSchema>;
+export type CreatePasswordResetInput = z.infer<
+  typeof createPasswordResetInputSchema
+>;
+export type UpdatePasswordResetInput = z.infer<
+  typeof updatePasswordResetInputSchema
+>;
+export type SearchPasswordResetInput = z.infer<
+  typeof searchPasswordResetInputSchema
+>;
