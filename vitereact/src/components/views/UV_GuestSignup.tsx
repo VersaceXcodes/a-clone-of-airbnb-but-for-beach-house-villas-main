@@ -26,7 +26,7 @@ interface SignupRequest {
 
 interface SignupResponse {
 	token: string;
-	user_id: number;
+	user_id: string;
 	is_host: boolean;
 	display_name: string;
 	profile_photo_url: string;
@@ -93,9 +93,10 @@ const UV_GuestSignup: React.FC = () => {
 		SignupRequest
 	>({
 		mutationFn: async (body) => {
-			const url = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+			const url = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
 			const res = await axios.post<SignupResponse>(`${url}/auth/signup`, body, {
 				headers: { "Content-Type": "application/json" },
+				timeout: 10000,
 			});
 			return res.data;
 		},
@@ -119,7 +120,22 @@ const UV_GuestSignup: React.FC = () => {
 		},
 		onError: (error) => {
 			set_is_submitting(false);
-			if (error.response?.data?.error) {
+			console.error("Signup error:", error);
+
+			if (error.code === "ECONNABORTED") {
+				set_error_message(
+					"Request timed out. Please check your connection and try again.",
+				);
+			} else if (error.response?.status === 502) {
+				set_error_message(
+					"Server is temporarily unavailable. Please try again in a moment.",
+				);
+			} else if (
+				error.response?.status === 0 ||
+				error.message === "Network Error"
+			) {
+				set_error_message("Network error. Please check your internet connection.");
+			} else if (error.response?.data?.error) {
 				set_error_message(error.response.data.error);
 			} else {
 				set_error_message("Could not sign up. Please try again.");

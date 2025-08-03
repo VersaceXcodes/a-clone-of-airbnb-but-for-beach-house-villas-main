@@ -6,7 +6,7 @@ import { io, Socket } from "socket.io-client";
 // Types
 // ======================
 export type UserSession = {
-	user_id: number | null;
+	user_id: string | null;
 	is_authenticated: boolean;
 	is_host: boolean;
 	token: string | null;

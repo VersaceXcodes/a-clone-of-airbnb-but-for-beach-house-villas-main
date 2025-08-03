@@ -103,8 +103,13 @@ const pool = new Pool(
 const app = express();
 app.use(
   cors({
-    origin: true, // Allow all origins for debugging
-    credentials: false, // Disable credentials for now
+    origin: [
+      "https://123testing-project-yes.launchpulse.ai",
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "http://localhost:4173",
+    ],
+    credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: [
       "Content-Type",
@@ -121,12 +126,52 @@ app.use(morgan("dev"));
 
 // Debug middleware to log all requests
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path} - Origin: ${req.headers.origin}`);
+  console.log(
+    `${req.method} ${req.path} - Origin: ${req.headers.origin} - User-Agent: ${req.headers["user-agent"]}`,
+  );
   next();
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Server Error:', err);
+  if (res.headersSent) {
+    return next(err);
+  }
+  
+  // Handle specific error types
+  if (err.code === 'ECONNREFUSED') {
+    return res.status(503).json({ error: 'Database connection failed' });
+  }
+  
+  if (err.name === 'ValidationError') {
+    return res.status(400).json({ error: 'Invalid input data' });
+  }
+  
+  res.status(500).json({ 
+    error: 'Internal server error',
+    message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
+  });
+});
 });
 
 // Create API router
 const apiRouter = express.Router();
+
+// Handle preflight requests
+apiRouter.options("*", (req, res) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, X-Requested-With, Accept, Origin",
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.sendStatus(200);
+});
 
 // --- HTTP + Socket server setup ---
 const server = http.createServer(app);
@@ -243,13 +288,30 @@ io.on("connection", (socket) => {
 /**
  * Health Check Endpoint
  */
-apiRouter.get("/health", (req, res) => {
-  res.json({
-    status: "ok",
-    timestamp: new Date().toISOString(),
-    service: "BeachStay Villas API",
-  });
-});
+apiRouter.get("/health", asyncWrap(async (req, res) => {
+  try {
+    // Test database connection
+    const client = await pool.connect();
+    await client.query('SELECT 1');
+    client.release();
+    
+    res.json({
+      status: "ok",
+      timestamp: new Date().toISOString(),
+      service: "BeachStay Villas API",
+      database: "connected"
+    });
+  } catch (error) {
+    console.error('Health check failed:', error);
+    res.status(503).json({
+      status: "error",
+      timestamp: new Date().toISOString(),
+      service: "BeachStay Villas API",
+      database: "disconnected",
+      error: error.message
+    });
+  }
+}));
 
 // --- Notification / Messaging event helpers ---
 async function emitToUser(user_id, event, payload) {
@@ -300,13 +362,25 @@ apiRouter.post(
     - Creates user row in DB
     - Responds with JWT and minimal user public payload
   */
-    const schema = z.object({
-      email: z.string().email().max(255),
-      password: z.string().min(8).max(255),
-      display_name: z.string().min(1).max(255),
+    console.log("Signup request received:", {
+      body: req.body,
+      headers: req.headers,
     });
+
+    const schema = z.object({
+      email: z.string().email().max(255).trim().toLowerCase(),
+      password: z.string().min(8).max(255),
+      display_name: z.string().min(1).max(255).trim(),
+    });
+
     const [body, err] = safeParse(schema, req.body);
-    if (err) return res.status(400).json({ error: err.message });
+    if (err) {
+      console.error("Validation error:", err);
+      return res
+        .status(400)
+        .json({ error: err.issues?.[0]?.message || err.message });
+    }
+
     const client = await pool.connect();
     try {
       // Check email uniqueness
@@ -314,8 +388,11 @@ apiRouter.post(
         `SELECT 1 FROM users WHERE email = $1`,
         [body.email],
       );
-      if (exists.rows.length > 0)
+      if (exists.rows.length > 0) {
+        console.log("Email already exists:", body.email);
         return res.status(400).json({ error: "Email already registered" });
+      }
+
       // Hash password
       const password_hash = await bcrypt.hash(body.password, 10);
       const user_id = genId("u");
@@ -334,8 +411,13 @@ apiRouter.post(
         created_at: now,
         updated_at: now,
       };
+
       const [validUser, valErr] = safeParse(createUserInputSchema, newUser);
-      if (valErr) throw valErr;
+      if (valErr) {
+        console.error("User validation error:", valErr);
+        throw valErr;
+      }
+
       await client.query(
         `INSERT INTO users (${Object.keys(validUser).join(",")})
        VALUES (${Object.keys(validUser)
@@ -343,6 +425,7 @@ apiRouter.post(
          .join(",")})`,
         Object.values(validUser),
       );
+
       const token = jwtSign({
         user_id,
         is_host: false,
@@ -350,6 +433,9 @@ apiRouter.post(
         display_name: body.display_name,
         profile_photo_url: newUser.profile_photo_url,
       });
+
+      console.log("User created successfully:", user_id);
+
       return res.json({
         token,
         user_id,
@@ -358,6 +444,9 @@ apiRouter.post(
         profile_photo_url: newUser.profile_photo_url,
         superhost_status: false,
       });
+    } catch (error) {
+      console.error("Database error during signup:", error);
+      return res.status(500).json({ error: "Failed to create user account" });
     } finally {
       client.release();
     }
